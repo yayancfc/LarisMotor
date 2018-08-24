@@ -32,7 +32,7 @@ public class OwnerMenuActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerview);
         list = new ArrayList<MenuModel>();
-        list.add(new MenuModel(R.drawable.user, "Customer",MotorActivity.class));
+        list.add(new MenuModel(R.drawable.user, "Customer",CustomerActivity.class));
         list.add(new MenuModel(R.drawable.motorbike, "Motor", MotorActivity.class));
         list.add(new MenuModel(R.drawable.transaction, "Transaksi",MotorActivity.class));
         list.add(new MenuModel(R.drawable.money, "Atur Intensif",MotorActivity.class));

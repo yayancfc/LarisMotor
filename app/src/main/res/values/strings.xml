@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LarisMotor</string>
+    <string name="app_name">Laris Motor</string>
     <string name="account_login">Account Login</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>

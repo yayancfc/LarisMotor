@@ -19,7 +19,8 @@
         <activity android:name=".SalesMenuActivity" />
         <activity android:name=".OwnerMenuActivity" />
         <activity android:name=".MotorActivity" />
-        <activity android:name=".DetailMotorActivity"></activity>
+        <activity android:name=".DetailMotorActivity" />
+        <activity android:name=".CustomerActivity"></activity>
     </application>
 
 </manifest>
