@@ -29,8 +29,6 @@ public class MotorActivity extends AppCompatActivity {
         list.add(new MotorModel(R.drawable.motorbike,"D 1232 FV", "20.000.000"));
         list.add(new MotorModel(R.drawable.motorbike,"D 1232 FV", "20.000.000"));
         list.add(new MotorModel(R.drawable.motorbike,"D 1232 FV", "20.000.000"));
-        list.add(new MotorModel(R.drawable.motorbike,"D 1232 FV", "20.000.000"));
-        list.add(new MotorModel(R.drawable.motorbike,"D 1232 FV", "20.000.000"));
 
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
