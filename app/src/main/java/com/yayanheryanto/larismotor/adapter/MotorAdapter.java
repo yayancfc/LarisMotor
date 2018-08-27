@@ -1,18 +1,23 @@
 package com.yayanheryanto.larismotor.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.MotorModel;
 
 import java.util.List;
+
+import static com.yayanheryanto.larismotor.retrofit.ApiClient.BASE_URL;
 
 public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHolder> {
 
@@ -35,11 +40,12 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MotorAdapter.MotorViewHolder motorViewHolder, int i) {
+    public void onBindViewHolder(MotorAdapter.MotorViewHolder motorViewHolder, int i) {
         final MotorModel motor = mList.get(i);
-        motorViewHolder.imageMotor.setImageResource(motor.getImage());
-        motorViewHolder.textHjm.setText(motor.getHjm());
-        motorViewHolder.textNopol.setText(motor.getNopol());
+        Picasso.get().load(BASE_URL+"storage/motor/"+motor.getGambar()).into(motorViewHolder.imageMotor);
+        motorViewHolder.textHjm.setText(""+motor.getHjm());
+        motorViewHolder.textNopol.setText(motor.getNoPolisi());
+
     }
 
     @Override
@@ -53,7 +59,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
         private TextView textNopol, textHjm;
         private View view;
 
-        public MotorViewHolder(@NonNull View itemView) {
+        public MotorViewHolder(View itemView) {
             super(itemView);
 
             this.view = itemView;
