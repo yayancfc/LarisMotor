@@ -1,10 +1,12 @@
 package com.yayanheryanto.larismotor;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.adapter.MotorAdapter;
 import com.yayanheryanto.larismotor.model.MotorModel;
@@ -24,28 +26,40 @@ public class MotorActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MotorAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_motor);
 
+        initProgressDialog();
         recyclerView = findViewById(R.id.rvMotor);
-        recyclerView.setHasFixedSize(true);
+
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         getMotor();
     }
 
+
+    private void initProgressDialog() {
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("Login");
+        dialog.setMessage("Sedang Memeriksa..");
+        dialog.setCancelable(false);
+    }
+
     private void getMotor(){
+        dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<MotorModel>> call = apiInterface.getMotor();
         call.enqueue(new Callback<List<MotorModel>>() {
             @Override
             public void onResponse(Call<List<MotorModel>> call, Response<List<MotorModel>> response) {
+                dialog.dismiss();
                 List<MotorModel> list = response.body();
-                Log.d("Data", String.valueOf(list.get(0).getNoPolisi()));
+
                 adapter = new MotorAdapter(getApplicationContext(),list);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -54,7 +68,9 @@ public class MotorActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<MotorModel>> call, Throwable t) {
-                Log.e("Error", t.getLocalizedMessage());
+                dialog.dismiss();
+                t.printStackTrace();
+                Toast.makeText(MotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
     }

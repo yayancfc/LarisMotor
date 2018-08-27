@@ -17,7 +17,8 @@ import com.yayanheryanto.larismotor.model.MotorModel;
 
 import java.util.List;
 
-import static com.yayanheryanto.larismotor.retrofit.ApiClient.BASE_URL;
+import static com.yayanheryanto.larismotor.config.config.BASE_URL;
+
 
 public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHolder> {
 

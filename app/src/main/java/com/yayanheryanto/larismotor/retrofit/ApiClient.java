@@ -3,9 +3,10 @@ package com.yayanheryanto.larismotor.retrofit;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.yayanheryanto.larismotor.config.config.BASE_URL;
+
 public class ApiClient {
     public static Retrofit retrofit = null;
-    public static final String BASE_URL = "http://192.168.137.1/";
 
     public static Retrofit getApiClient(){
         if (retrofit == null) {
