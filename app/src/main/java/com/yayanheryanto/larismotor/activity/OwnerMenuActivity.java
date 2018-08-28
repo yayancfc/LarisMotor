@@ -1,9 +1,8 @@
-package com.yayanheryanto.larismotor;
+package com.yayanheryanto.larismotor.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,6 +12,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 
+import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.MenuAdapter;
 import com.yayanheryanto.larismotor.model.Menu;
 
@@ -39,9 +39,10 @@ public class OwnerMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_owner_menu);
 
 
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
-        id = pref.getString(ID_USER, "");
+        pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
         token = pref.getString(ACCESTOKEN, "");
+        //Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
 
         ScrollView scrollView = findViewById(R.id.scrollView);
         scrollView.setFocusableInTouchMode(true);

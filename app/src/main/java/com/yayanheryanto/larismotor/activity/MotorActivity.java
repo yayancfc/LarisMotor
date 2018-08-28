@@ -1,4 +1,4 @@
-package com.yayanheryanto.larismotor;
+package com.yayanheryanto.larismotor.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.MotorAdapter;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
@@ -61,7 +62,7 @@ public class MotorActivity extends AppCompatActivity {
                 dialog.dismiss();
                 List<Motor> list = response.body();
 
-                adapter = new MotorAdapter(getApplicationContext(),list);
+                adapter = new MotorAdapter(getApplicationContext(),list, MotorActivity.this);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
 

@@ -1,9 +1,15 @@
 package com.yayanheryanto.larismotor.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+public class Motor implements Parcelable {
 
-public class Motor {
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     @SerializedName("no_mesin")
     @Expose
@@ -29,6 +35,15 @@ public class Motor {
     @SerializedName("gambar")
     @Expose
     private String gambar;
+
+    @SerializedName("gambar1")
+    @Expose
+    private String gambar1;
+
+    @SerializedName("gambar2")
+    @Expose
+    private String gambar2;
+
     @SerializedName("id_transaksi")
     @Expose
     private Object idTransaksi;
@@ -127,4 +142,90 @@ public class Motor {
         this.idTipe = idTipe;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getGambar1() {
+        return gambar1;
+    }
+
+    public void setGambar1(String gambar1) {
+        this.gambar1 = gambar1;
+    }
+
+    public String getGambar2() {
+        return gambar2;
+    }
+
+    public void setGambar2(String gambar2) {
+        this.gambar2 = gambar2;
+    }
+
+    protected Motor(Parcel in) {
+        message = in.readString();
+        noMesin = in.readString();
+        noPolisi = in.readString();
+        noRangka = in.readString();
+        tahun = in.readString();
+        hjm = in.readByte() == 0x00 ? null : in.readInt();
+        status = in.readByte() == 0x00 ? null : in.readInt();
+        hargaTerjual = (Object) in.readValue(Object.class.getClassLoader());
+        gambar = in.readString();
+        gambar1 = in.readString();
+        gambar2 = in.readString();
+        idTransaksi = (Object) in.readValue(Object.class.getClassLoader());
+        idMerk = (Object) in.readValue(Object.class.getClassLoader());
+        idTipe = (Object) in.readValue(Object.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(message);
+        dest.writeString(noMesin);
+        dest.writeString(noPolisi);
+        dest.writeString(noRangka);
+        dest.writeString(tahun);
+        if (hjm == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(hjm);
+        }
+        if (status == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(status);
+        }
+        dest.writeValue(hargaTerjual);
+        dest.writeString(gambar);
+        dest.writeString(gambar1);
+        dest.writeString(gambar2);
+        dest.writeValue(idTransaksi);
+        dest.writeValue(idMerk);
+        dest.writeValue(idTipe);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Motor> CREATOR = new Parcelable.Creator<Motor>() {
+        @Override
+        public Motor createFromParcel(Parcel in) {
+            return new Motor(in);
+        }
+
+        @Override
+        public Motor[] newArray(int size) {
+            return new Motor[size];
+        }
+    };
 }

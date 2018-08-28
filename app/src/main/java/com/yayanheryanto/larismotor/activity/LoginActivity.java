@@ -1,4 +1,4 @@
-package com.yayanheryanto.larismotor;
+package com.yayanheryanto.larismotor.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.User;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;

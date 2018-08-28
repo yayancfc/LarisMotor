@@ -64,6 +64,7 @@
                     android:layout_gravity="end">
 
                     <ImageView
+                        android:id="@+id/imgEdit"
                         android:layout_width="40dp"
                         android:layout_height="30dp"
                         android:src="@drawable/ic_pencil_edit_button"

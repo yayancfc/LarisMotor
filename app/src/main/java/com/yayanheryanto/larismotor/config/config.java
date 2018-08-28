@@ -8,6 +8,7 @@ public class config {
     public static final String ERROR = "ERROR";
     public static final String ACCESTOKEN = "ACCESTOKEN";
     public static final String DEBUG = "DEBUG";
+    public static final String DATA_MOTOR = "DATA_MOTOR";
 
-    public static final String BASE_URL = "http://54263433.ngrok.io/";
+    public static final String BASE_URL = "http://192.168.1.4/";
 }

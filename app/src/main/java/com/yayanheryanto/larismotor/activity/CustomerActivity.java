@@ -1,10 +1,11 @@
-package com.yayanheryanto.larismotor;
+package com.yayanheryanto.larismotor.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.CustomerAdapter;
 import com.yayanheryanto.larismotor.model.Customer;
 

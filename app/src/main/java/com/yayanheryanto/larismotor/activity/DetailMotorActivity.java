@@ -1,7 +1,9 @@
-package com.yayanheryanto.larismotor;
+package com.yayanheryanto.larismotor.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.yayanheryanto.larismotor.R;
 
 public class DetailMotorActivity extends AppCompatActivity {
 

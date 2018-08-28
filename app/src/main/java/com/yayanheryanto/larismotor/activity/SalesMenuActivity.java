@@ -1,4 +1,4 @@
-package com.yayanheryanto.larismotor;
+package com.yayanheryanto.larismotor.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
+import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.MenuAdapter;
 import com.yayanheryanto.larismotor.model.Menu;
 
