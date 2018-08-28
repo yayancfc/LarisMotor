@@ -9,14 +9,12 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 
 import com.yayanheryanto.larismotor.adapter.MenuAdapter;
-import com.yayanheryanto.larismotor.model.MenuModel;
+import com.yayanheryanto.larismotor.model.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,7 @@ import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 public class OwnerMenuActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private List<MenuModel> list;
+    private List<Menu> list;
     private MenuAdapter adapter;
     private LinearLayoutManager layoutManager;
     private String id, token;
@@ -50,15 +48,15 @@ public class OwnerMenuActivity extends AppCompatActivity {
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
         recyclerView = findViewById(R.id.recyclerview);
-        list = new ArrayList<MenuModel>();
-        list.add(new MenuModel(R.drawable.user, "Customer",CustomerActivity.class));
-        list.add(new MenuModel(R.drawable.motorbike, "Motor", MotorActivity.class));
-        list.add(new MenuModel(R.drawable.transaction, "Transaksi",MotorActivity.class));
-        list.add(new MenuModel(R.drawable.money, "Atur Intensif",MotorActivity.class));
-        list.add(new MenuModel(R.drawable.report, "Laporan Penjualan",MotorActivity.class));
-        list.add(new MenuModel(R.drawable.chat, "SMS Gateway",MotorActivity.class));
-        list.add(new MenuModel(R.drawable.user, "Master",MotorActivity.class));
-        list.add(new MenuModel(R.drawable.user, "Sales",MotorActivity.class));
+        list = new ArrayList<Menu>();
+        list.add(new Menu(R.drawable.user, "Customer",CustomerActivity.class));
+        list.add(new Menu(R.drawable.motorbike, "Motor", MotorActivity.class));
+        list.add(new Menu(R.drawable.transaction, "Transaksi",MotorActivity.class));
+        list.add(new Menu(R.drawable.money, "Atur Intensif",MotorActivity.class));
+        list.add(new Menu(R.drawable.report, "Laporan Penjualan",MotorActivity.class));
+        list.add(new Menu(R.drawable.chat, "SMS Gateway",MotorActivity.class));
+        list.add(new Menu(R.drawable.user, "Master",MotorActivity.class));
+        list.add(new Menu(R.drawable.user, "Sales",MotorActivity.class));
 
         recyclerView.setHasFixedSize(true);
         layoutManager = new GridLayoutManager(this,2);
@@ -69,7 +67,7 @@ public class OwnerMenuActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
         getMenuInflater().inflate(R.menu.menu_owner, menu);
 
         return true;
@@ -87,8 +85,8 @@ public class OwnerMenuActivity extends AppCompatActivity {
                 Intent intent = new Intent(OwnerMenuActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
-
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

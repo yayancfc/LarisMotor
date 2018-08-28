@@ -2,13 +2,13 @@ package com.yayanheryanto.larismotor.model;
 
 import android.app.Activity;
 
-public class MenuModel {
+public class Menu {
 
     private int image;
     private String title;
     private Class<? extends Activity> mContext;
 
-    public MenuModel(int image, String title, final Class<? extends Activity> ActivityToOpen) {
+    public Menu(int image, String title, final Class<? extends Activity> ActivityToOpen) {
         this.image = image;
         this.title = title;
         this.mContext = ActivityToOpen ;

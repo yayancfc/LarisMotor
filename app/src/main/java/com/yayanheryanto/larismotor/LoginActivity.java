@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,12 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.yayanheryanto.larismotor.model.MotorModel;
-import com.yayanheryanto.larismotor.model.UserModel;
+import com.yayanheryanto.larismotor.model.User;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -97,12 +93,12 @@ public class LoginActivity extends AppCompatActivity {
     private void requestLogin() {
         dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<UserModel> call = apiInterface.getUser(user, pass);
-        call.enqueue(new Callback<UserModel>() {
+        Call<User> call = apiInterface.getUser(user, pass);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 Log.d("User", response.body().getMessage());
-                UserModel user = response.body();
+                User user = response.body();
 
                 if (user.getMessage().equals("success")) {
                     dialog.dismiss();
@@ -132,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<UserModel> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 t.printStackTrace();
                 Toast.makeText(LoginActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }

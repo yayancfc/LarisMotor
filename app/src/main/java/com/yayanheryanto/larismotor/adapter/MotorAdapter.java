@@ -1,10 +1,8 @@
 package com.yayanheryanto.larismotor.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.model.MotorModel;
+import com.yayanheryanto.larismotor.model.Motor;
 
 import java.util.List;
 
@@ -24,9 +22,9 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
 
 
     private Context mContext;
-    private List<MotorModel> mList;
+    private List<Motor> mList;
 
-    public MotorAdapter(Context mContext, List<MotorModel> mList) {
+    public MotorAdapter(Context mContext, List<Motor> mList) {
         this.mContext = mContext;
         this.mList = mList;
     }
@@ -42,7 +40,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
 
     @Override
     public void onBindViewHolder(MotorAdapter.MotorViewHolder motorViewHolder, int i) {
-        final MotorModel motor = mList.get(i);
+        final Motor motor = mList.get(i);
         Picasso.get().load(BASE_URL+"storage/motor/"+motor.getGambar()).into(motorViewHolder.imageMotor);
         motorViewHolder.textHjm.setText(""+motor.getHjm());
         motorViewHolder.textNopol.setText(motor.getNoPolisi());

@@ -3,7 +3,7 @@ package com.yayanheryanto.larismotor.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MotorModel {
+public class Motor {
 
     @SerializedName("no_mesin")
     @Expose

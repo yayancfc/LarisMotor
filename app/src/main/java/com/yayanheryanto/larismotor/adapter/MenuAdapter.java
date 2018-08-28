@@ -9,10 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.model.MenuModel;
+import com.yayanheryanto.larismotor.model.Menu;
 
 import java.util.List;
 
@@ -20,9 +19,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
 
     private Context mContext;
-    private List<MenuModel> mList;
+    private List<Menu> mList;
 
-    public MenuAdapter(Context mContext, List<MenuModel> mList) {
+    public MenuAdapter(Context mContext, List<Menu> mList) {
         this.mContext = mContext;
         this.mList = mList;
     }
@@ -39,7 +38,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MenuAdapter.MenuViewHolder menuViewHolder, int i) {
-        final MenuModel menu = mList.get(i);
+        final Menu menu = mList.get(i);
         menuViewHolder.imageMenu.setImageResource(menu.getImage());
         menuViewHolder.textMenu.setText(menu.getTitle());
         menuViewHolder.view.setOnClickListener(new View.OnClickListener() {

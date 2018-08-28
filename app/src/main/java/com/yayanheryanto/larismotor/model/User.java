@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserModel implements Parcelable {
+public class User implements Parcelable {
 
     @SerializedName("id_user")
     @Expose
@@ -115,10 +115,10 @@ public class UserModel implements Parcelable {
         dest.writeString(this.message);
     }
 
-    public UserModel() {
+    public User() {
     }
 
-    protected UserModel(Parcel in) {
+    protected User(Parcel in) {
         this.idUser = in.readString();
         this.username = in.readString();
         this.password = in.readString();
@@ -129,15 +129,15 @@ public class UserModel implements Parcelable {
         this.message = in.readString();
     }
 
-    public static final Parcelable.Creator<UserModel> CREATOR = new Parcelable.Creator<UserModel>() {
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override
-        public UserModel createFromParcel(Parcel source) {
-            return new UserModel(source);
+        public User createFromParcel(Parcel source) {
+            return new User(source);
         }
 
         @Override
-        public UserModel[] newArray(int size) {
-            return new UserModel[size];
+        public User[] newArray(int size) {
+            return new User[size];
         }
     };
 }

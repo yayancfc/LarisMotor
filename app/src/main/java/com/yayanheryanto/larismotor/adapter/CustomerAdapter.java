@@ -6,13 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.model.CustomerModel;
-import com.yayanheryanto.larismotor.model.MenuModel;
-import com.yayanheryanto.larismotor.model.MotorModel;
+import com.yayanheryanto.larismotor.model.Customer;
 
 import java.util.List;
 
@@ -20,9 +17,9 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
 
 
     private Context mContext;
-    private List<CustomerModel> mList;
+    private List<Customer> mList;
 
-    public CustomerAdapter(Context mContext, List<CustomerModel> mList) {
+    public CustomerAdapter(Context mContext, List<Customer> mList) {
         this.mContext = mContext;
         this.mList = mList;
     }
@@ -38,7 +35,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
 
     @Override
     public void onBindViewHolder(@NonNull CustomerAdapter.CustomerViewHolder customerViewHolder, int i) {
-        final CustomerModel customer = mList.get(i);
+        final Customer customer = mList.get(i);
         customerViewHolder.textNama.setText(customer.getNama());
         customerViewHolder.textTelp.setText(customer.getTelepon());
     }

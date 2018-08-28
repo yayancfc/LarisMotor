@@ -1,19 +1,20 @@
 package com.yayanheryanto.larismotor;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.adapter.MotorAdapter;
-import com.yayanheryanto.larismotor.model.MotorModel;
+import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -53,12 +54,12 @@ public class MotorActivity extends AppCompatActivity {
     private void getMotor(){
         dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<MotorModel>> call = apiInterface.getMotor();
-        call.enqueue(new Callback<List<MotorModel>>() {
+        Call<List<Motor>> call = apiInterface.getMotor();
+        call.enqueue(new Callback<List<Motor>>() {
             @Override
-            public void onResponse(Call<List<MotorModel>> call, Response<List<MotorModel>> response) {
+            public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
                 dialog.dismiss();
-                List<MotorModel> list = response.body();
+                List<Motor> list = response.body();
 
                 adapter = new MotorAdapter(getApplicationContext(),list);
                 recyclerView.setAdapter(adapter);
@@ -67,11 +68,31 @@ public class MotorActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<MotorModel>> call, Throwable t) {
+            public void onFailure(Call<List<Motor>> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(MotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_motor, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.tambah:
+                Intent intent = new Intent(MotorActivity.this, AddMotorActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

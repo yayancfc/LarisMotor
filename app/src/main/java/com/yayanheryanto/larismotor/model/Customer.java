@@ -1,10 +1,10 @@
 package com.yayanheryanto.larismotor.model;
 
-public class CustomerModel {
+public class Customer {
 
     private String nama, telepon;
 
-    public CustomerModel(String nama, String telepon) {
+    public Customer(String nama, String telepon) {
         this.nama = nama;
         this.telepon = telepon;
     }
