@@ -9,5 +9,5 @@ public class config {
     public static final String ACCESTOKEN = "ACCESTOKEN";
     public static final String DEBUG = "DEBUG";
 
-    public static final String BASE_URL = "http://192.168.1.4/";
+    public static final String BASE_URL = "http://54263433.ngrok.io/";
 }

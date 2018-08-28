@@ -46,8 +46,8 @@ public class MotorActivity extends AppCompatActivity {
 
     private void initProgressDialog() {
         dialog = new ProgressDialog(this);
-        dialog.setTitle("Login");
-        dialog.setMessage("Sedang Memeriksa..");
+        dialog.setTitle("Loading");
+        dialog.setMessage("Sedang Memproses..");
         dialog.setCancelable(false);
     }
 
