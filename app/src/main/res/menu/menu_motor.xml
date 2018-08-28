@@ -5,7 +5,7 @@
     <item android:title="Tambah"
         android:id="@+id/tambah"
         app:showAsAction="always"
-        android:icon="@drawable/ic_add_box">
+        android:icon="@drawable/ic_plus">
 
     </item>
 </menu>
