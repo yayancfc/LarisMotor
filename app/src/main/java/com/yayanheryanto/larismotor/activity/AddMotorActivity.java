@@ -243,6 +243,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                 dialog.dismiss();
                 Log.d(DEBUG, String.valueOf(response.body().getMessage()));
                 if (response.body().getMessage().equals("success")){
+                    Toast.makeText(AddMotorActivity.this, "Data Motor Berhasil Ditambah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddMotorActivity.this, MotorActivity.class);
                     startActivity(intent);
                     finish();
