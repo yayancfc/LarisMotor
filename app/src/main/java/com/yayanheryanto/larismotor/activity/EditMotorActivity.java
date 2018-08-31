@@ -59,7 +59,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     private ImageView image1, image2, image3;
     private ArrayList<Image> images;
     private EditText no_mesin, no_polisi, no_rangka, tahun, hjm;
-    private RadioGroup status;
+    private RadioGroup status, kondisi;
     private String merkMotor, tipeMotor;
     private ProgressDialog dialog;
     private Motor motor;
@@ -80,6 +80,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         tahun = findViewById(R.id.tahun);
         hjm = findViewById(R.id.hjm);
         status = findViewById(R.id.status);
+        kondisi = findViewById(R.id.kondisi);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
@@ -133,10 +134,17 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         no_rangka.setText(motor.getNoRangka());
         hjm.setText(""+motor.getHjm());
         tahun.setText(motor.getTahun());
+
         if (motor.getStatus().equals(1)){
             status.check(R.id.radio_available);
         }else {
             status.check(R.id.radio_not_available);
+        }
+
+        if (motor.getKondisi().equals(1)){
+            kondisi.check(R.id.radio_baru);
+        }else {
+            kondisi.check(R.id.radio_bekas);
         }
 
         if (motor.getGambar()!=null){
@@ -292,6 +300,15 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         if (tersedia.equalsIgnoreCase("tersedia")){
             statusMotor = "1";
         }
+
+        int selectedKondisi = kondisi.getCheckedRadioButtonId();
+        RadioButton radioKondisi = (RadioButton) findViewById(selectedKondisi);
+        String baru = radioKondisi.getText().toString();
+        String kondisiMotor = "0";
+        if (baru.equalsIgnoreCase("baru")){
+            kondisiMotor = "1";
+        }
+
         String mesin = no_mesin.getText().toString();
         String polisi = no_polisi.getText().toString();
         String rangka = no_rangka.getText().toString();
@@ -310,6 +327,8 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         builder.addFormDataPart("status",statusMotor);
         builder.addFormDataPart("tipe",tipeMotor);
         builder.addFormDataPart("merk",merkMotor);
+        builder.addFormDataPart("kondisi",kondisiMotor);
+
         if (motor.getGambar()!=null){
             builder.addFormDataPart("gambar",motor.getGambar());
         }

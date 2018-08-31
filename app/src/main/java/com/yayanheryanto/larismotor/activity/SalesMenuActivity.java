@@ -10,10 +10,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.MenuAdapter;
 import com.yayanheryanto.larismotor.model.Menu;
+import com.yayanheryanto.larismotor.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,8 @@ import java.util.List;
 import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.config.config.NAMA_USER;
+import static com.yayanheryanto.larismotor.config.config.USER_DATA;
 
 public class SalesMenuActivity extends AppCompatActivity {
 
@@ -31,15 +36,21 @@ public class SalesMenuActivity extends AppCompatActivity {
     private String id, token;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private TextView txName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales_menu);
 
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         id = pref.getString(ID_USER, "");
         token = pref.getString(ACCESTOKEN, "");
+        String namaUser = pref.getString(NAMA_USER, "");
+
+        txName = findViewById(R.id.txtName);
+        txName.setText(namaUser);
 
         recyclerView = findViewById(R.id.recyclerview);
         list = new ArrayList<Menu>();
@@ -70,6 +81,7 @@ public class SalesMenuActivity extends AppCompatActivity {
                 editor = pref.edit();
                 editor.putString(ACCESTOKEN,"");
                 editor.putString(ID_USER, "");
+                editor.putString(NAMA_USER, "");
                 editor.commit();
                 Intent intent = new Intent(SalesMenuActivity.this, LoginActivity.class);
                 startActivity(intent);

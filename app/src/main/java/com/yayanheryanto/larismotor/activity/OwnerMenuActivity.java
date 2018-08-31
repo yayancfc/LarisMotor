@@ -11,17 +11,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.MenuAdapter;
 import com.yayanheryanto.larismotor.model.Menu;
+import com.yayanheryanto.larismotor.model.Motor;
+import com.yayanheryanto.larismotor.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
+import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.config.config.NAMA_USER;
+import static com.yayanheryanto.larismotor.config.config.USER_DATA;
 
 public class OwnerMenuActivity extends AppCompatActivity {
 
@@ -32,6 +38,7 @@ public class OwnerMenuActivity extends AppCompatActivity {
     private String id, token;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private TextView txName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +49,12 @@ public class OwnerMenuActivity extends AppCompatActivity {
         pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
         token = pref.getString(ACCESTOKEN, "");
+        String namaUser = pref.getString(NAMA_USER, "");
         //Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
+
+        txName = findViewById(R.id.txName);
+
+        txName.setText(namaUser);
 
         ScrollView scrollView = findViewById(R.id.scrollView);
         scrollView.setFocusableInTouchMode(true);
@@ -82,6 +94,7 @@ public class OwnerMenuActivity extends AppCompatActivity {
                 editor = pref.edit();
                 editor.putString(ACCESTOKEN,"");
                 editor.putString(ID_USER, "");
+                editor.putString(NAMA_USER, "");
                 editor.commit();
                 Intent intent = new Intent(OwnerMenuActivity.this, LoginActivity.class);
                 startActivity(intent);

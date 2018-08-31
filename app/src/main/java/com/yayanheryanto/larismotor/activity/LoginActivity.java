@@ -27,6 +27,7 @@ import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.config.config.NAMA_USER;
 import static com.yayanheryanto.larismotor.config.config.USER_DATA;
 
 public class LoginActivity extends AppCompatActivity {
@@ -103,19 +104,19 @@ public class LoginActivity extends AppCompatActivity {
                 User user = response.body();
 
                 if (user.getMessage().equals("success")) {
+                    Log.d(DEBUG,user.getNama());
                     dialog.dismiss();
                     editor = pref.edit();
                     editor.putString(ID_USER, user.getIdUser());
+                    editor.putString(NAMA_USER, user.getNama());
                     editor.putString(ACCESTOKEN, user.getAccesToken());
                     editor.apply();
-                    if (user.getIdUser().equals("1")) {
+                    if (user.getStatus()==1) {
                         Intent intent = new Intent(LoginActivity.this, OwnerMenuActivity.class);
-                        intent.putExtra(USER_DATA, user);
                         startActivity(intent);
                         finish();
                     } else {
                         Intent intent = new Intent(LoginActivity.this, SalesMenuActivity.class);
-                        intent.putExtra(USER_DATA, user);
                         startActivity(intent);
                         finish();
                     }

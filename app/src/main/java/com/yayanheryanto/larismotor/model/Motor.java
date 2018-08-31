@@ -29,6 +29,11 @@ public class Motor implements Parcelable {
     @SerializedName("status")
     @Expose
     private Integer status;
+
+    @SerializedName("kondisi")
+    @Expose
+    private Integer kondisi;
+
     @SerializedName("harga_terjual")
     @Expose
     private Object hargaTerjual;
@@ -166,6 +171,16 @@ public class Motor implements Parcelable {
         this.gambar2 = gambar2;
     }
 
+    public Integer getKondisi() {
+        return kondisi;
+    }
+
+    public void setKondisi(Integer kondisi) {
+        this.kondisi = kondisi;
+    }
+
+
+
     protected Motor(Parcel in) {
         message = in.readString();
         noMesin = in.readString();
@@ -174,6 +189,7 @@ public class Motor implements Parcelable {
         tahun = in.readString();
         hjm = in.readByte() == 0x00 ? null : in.readInt();
         status = in.readByte() == 0x00 ? null : in.readInt();
+        kondisi = in.readByte() == 0x00 ? null : in.readInt();
         hargaTerjual = (Object) in.readValue(Object.class.getClassLoader());
         gambar = in.readString();
         gambar1 = in.readString();
@@ -206,6 +222,12 @@ public class Motor implements Parcelable {
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeInt(status);
+        }
+        if (kondisi == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(kondisi);
         }
         dest.writeValue(hargaTerjual);
         dest.writeString(gambar);

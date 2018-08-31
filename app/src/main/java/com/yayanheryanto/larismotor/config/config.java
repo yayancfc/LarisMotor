@@ -9,6 +9,7 @@ public class config {
     public static final String ACCESTOKEN = "ACCESTOKEN";
     public static final String DEBUG = "DEBUG";
     public static final String DATA_MOTOR = "DATA_MOTOR";
+    public static final String NAMA_USER = "NAMA_USER";
 
     public static final String BASE_URL = "http://192.168.1.4/";
 }

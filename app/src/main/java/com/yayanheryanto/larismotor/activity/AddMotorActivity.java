@@ -43,6 +43,7 @@ import retrofit2.Response;
 
 import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class AddMotorActivity extends AppCompatActivity implements View.OnClickListener {
@@ -55,7 +56,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private ImageView image1, image2, image3;
     private ArrayList<Image> images;
     private EditText no_mesin, no_polisi, no_rangka, tahun, hjm;
-    private RadioGroup status;
+    private RadioGroup status, kondisi;
     private String merkMotor, tipeMotor;
     private ProgressDialog dialog;
 
@@ -77,6 +78,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         tahun = findViewById(R.id.tahun);
         hjm = findViewById(R.id.hjm);
         status = findViewById(R.id.status);
+        kondisi = findViewById(R.id.kondisi);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
@@ -201,6 +203,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private void uploadImage() {
         dialog.show();
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
         String token = pref.getString(ACCESTOKEN, "");
 
         int selectedId = status.getCheckedRadioButtonId();
@@ -210,6 +213,16 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         if (tersedia.equalsIgnoreCase("tersedia")){
             statusMotor = "1";
         }
+
+        int selectedKondisi = kondisi.getCheckedRadioButtonId();
+        RadioButton radioKondisi = (RadioButton) findViewById(selectedKondisi);
+        String baru = radioKondisi.getText().toString();
+        String kondisiMotor = "0";
+        if (baru.equalsIgnoreCase("baru")){
+            kondisiMotor = "1";
+        }
+
+
         String mesin = no_mesin.getText().toString();
         String polisi = no_polisi.getText().toString();
         String rangka = no_rangka.getText().toString();
@@ -227,6 +240,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         builder.addFormDataPart("status",statusMotor);
         builder.addFormDataPart("tipe",tipeMotor);
         builder.addFormDataPart("merk",merkMotor);
+        builder.addFormDataPart("id_user",id);
+        builder.addFormDataPart("kondisi",kondisiMotor);
 
         for (int i = 0; i < images.size(); i++) {
             File file = new File(images.get(i).path);
