@@ -1,12 +1,53 @@
 package com.yayanheryanto.larismotor.model;
 
-public class Customer {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private String nama, telepon;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    public Customer(String nama, String telepon) {
-        this.nama = nama;
-        this.telepon = telepon;
+public class Customer implements Parcelable {
+
+    @SerializedName("no_ktp")
+    @Expose
+    private String noKtp;
+    @SerializedName("nama")
+    @Expose
+    private String nama;
+    @SerializedName("alamat")
+    @Expose
+    private String alamat;
+    @SerializedName("no_telp")
+    @Expose
+    private String noTelp;
+    @SerializedName("ttl")
+    @Expose
+    private String ttl;
+    @SerializedName("Agama")
+    @Expose
+    private String agama;
+    @SerializedName("pekerjaan")
+    @Expose
+    private String pekerjaan;
+    @SerializedName("whatsapp")
+    @Expose
+    private String whatsapp;
+    @SerializedName("instagram")
+    @Expose
+    private String instagram;
+    @SerializedName("facebook")
+    @Expose
+    private String facebook;
+    @SerializedName("message")
+    @Expose
+    private String message;
+
+    public String getNoKtp() {
+        return noKtp;
+    }
+
+    public void setNoKtp(String noKtp) {
+        this.noKtp = noKtp;
     }
 
     public String getNama() {
@@ -17,11 +58,125 @@ public class Customer {
         this.nama = nama;
     }
 
-    public String getTelepon() {
-        return telepon;
+    public String getAlamat() {
+        return alamat;
     }
 
-    public void setTelepon(String telepon) {
-        this.telepon = telepon;
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
     }
+
+    public String getNoTelp() {
+        return noTelp;
+    }
+
+    public void setNoTelp(String noTelp) {
+        this.noTelp = noTelp;
+    }
+
+    public String getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(String ttl) {
+        this.ttl = ttl;
+    }
+
+    public String getAgama() {
+        return agama;
+    }
+
+    public void setAgama(String agama) {
+        this.agama = agama;
+    }
+
+    public String getPekerjaan() {
+        return pekerjaan;
+    }
+
+    public void setPekerjaan(String pekerjaan) {
+        this.pekerjaan = pekerjaan;
+    }
+
+    public String getWhatsapp() {
+        return whatsapp;
+    }
+
+    public void setWhatsapp(String whatsapp) {
+        this.whatsapp = whatsapp;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+
+    protected Customer(Parcel in) {
+        noKtp = in.readString();
+        nama = in.readString();
+        alamat = in.readString();
+        noTelp = in.readString();
+        ttl = in.readString();
+        agama = in.readString();
+        pekerjaan = in.readString();
+        whatsapp = in.readString();
+        instagram = in.readString();
+        facebook = in.readString();
+        message = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(noKtp);
+        dest.writeString(nama);
+        dest.writeString(alamat);
+        dest.writeString(noTelp);
+        dest.writeString(ttl);
+        dest.writeString(agama);
+        dest.writeString(pekerjaan);
+        dest.writeString(whatsapp);
+        dest.writeString(instagram);
+        dest.writeString(facebook);
+        dest.writeString(message);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Customer> CREATOR = new Parcelable.Creator<Customer>() {
+        @Override
+        public Customer createFromParcel(Parcel in) {
+            return new Customer(in);
+        }
+
+        @Override
+        public Customer[] newArray(int size) {
+            return new Customer[size];
+        }
+    };
 }

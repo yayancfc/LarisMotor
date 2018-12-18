@@ -6,26 +6,54 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.SplashScreenActivity">
+        <activity android:name=".view.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SalesMenuActivity" />
-        <activity android:name=".activity.OwnerMenuActivity" />
-        <activity android:name=".activity.MotorActivity" />
-        <activity android:name=".activity.DetailMotorActivity" />
-        <activity android:name=".activity.CustomerActivity" />
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.AddMotorActivity" />
-        <activity android:name=".activity.EditMotorActivity"></activity>
+        <activity android:name=".view.sales.SalesMenuActivity" />
+        <activity android:name=".view.owner.OwnerMenuActivity" />
+        <activity android:name=".view.owner.MotorActivity" />
+        <activity android:name=".view.owner.DetailMotorActivity" />
+        <activity android:name=".view.owner.CustomerActivity" />
+        <activity android:name=".view.LoginActivity" />
+        <activity android:name=".view.owner.AddMotorActivity" />
+        <activity android:name=".view.owner.EditMotorActivity" />
+        <activity android:name=".view.owner.SalesActivity" />
+        <activity android:name=".view.owner.AddSalesActivity" />
+        <activity android:name=".view.owner.EditSalesActivity" />
+        <activity android:name=".view.owner.MasterActivity" />
+        <activity android:name=".view.owner.AddMerkActivity" />
+        <activity android:name=".view.owner.EditMerkActivity" />
+        <activity android:name=".view.owner.AddTipeActivity" />
+        <activity android:name=".view.owner.EditTipeActivity" />
+        <activity android:name=".view.owner.DetailSalesActivity" />
+        <activity android:name=".view.pending.PendingTransaksiActivity" />
+        <activity android:name=".view.pending.AddPendingBeliActivity" />
+        <activity android:name=".view.pending.AddpendingJualActivity" />
+        <activity android:name=".view.pending.EditPendingBeliActivity" />
+        <activity android:name=".view.owner.DetailPendingBeliActivity" />
+        <activity android:name=".view.owner.DetailPendingJualActivity" />
+        <activity android:name=".view.pending.EditPendingJualActivity" />
+        <activity android:name=".view.sales.EditProfileSalesActivity" />
+        <activity android:name=".view.sales.MotorSalesActivity" />
+        <activity android:name=".view.sales.AddMotorSalesActivity" />
+        <activity android:name=".view.sales.EditMotorSalesActivity" />
+        <activity android:name=".view.owner.EditProfileOwnerActivity" />
+        <activity android:name=".view.owner.DetailCustomerActivity" />
+        <activity android:name=".view.transaksi.TransaksiActivity" />
+        <activity android:name=".view.transaksi.IsiDataActivity" />
+        <activity
+            android:name=".view.laporan.LaporanActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".view.laporan.FilterActivity"></activity>
     </application>
 
 </manifest>

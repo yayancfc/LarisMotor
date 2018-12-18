@@ -1,0 +1,155 @@
+package com.yayanheryanto.larismotor.view.sales;
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.yayanheryanto.larismotor.R;
+import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.model.User;
+import com.yayanheryanto.larismotor.retrofit.ApiClient;
+import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.config.config.NAMA_USER;
+
+public class EditProfileSalesActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private EditText txtNama, txtAlamat, txtNoKTP, txtNoWa, txtUsername, txtPassword;
+    private User user;
+    private String id;
+    private Button btnSave;
+
+    private ProgressDialog dialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_profile_sales);
+
+        txtNama = findViewById(R.id.nama);
+        txtAlamat = findViewById(R.id.alamat);
+        txtNoKTP = findViewById(R.id.no_ktp);
+        txtNoWa = findViewById(R.id.no_wa);
+        txtUsername = findViewById(R.id.username);
+        txtPassword = findViewById(R.id.password);
+        btnSave = findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(this);
+
+
+        initProgressDialog();
+        getDataSales();
+
+    }
+
+
+    private void initProgressDialog() {
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("Loading");
+        dialog.setMessage("Sedang Memproses..");
+        dialog.setCancelable(false);
+    }
+
+
+    private void getDataSales() {
+        dialog.show();
+        id = getIntent().getExtras().getString("ID_USER","");
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String token = pref.getString(ACCESTOKEN, "");
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<User> call = apiInterface.getProfile(token, id);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                dialog.dismiss();
+                user = response.body();
+
+                if (response.body().getMessage().equals("success")) {
+                    txtNama.setText(user.getNama());
+                    txtAlamat.setText(user.getAlamat());
+                    txtNoKTP.setText(user.getNoKtpSales());
+                    txtNoWa.setText(user.getNoWa());
+                    txtUsername.setText(user.getUsername());
+                    txtPassword.setText(user.getPassword());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                dialog.dismiss();
+                t.printStackTrace();
+                Toast.makeText(EditProfileSalesActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view==btnSave){
+            updateProfile();
+        }
+    }
+
+    private void updateProfile() {
+        dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = pref.edit();
+        String id = pref.getString(ID_USER, "");
+        String token = pref.getString(ACCESTOKEN, "");
+        final String nama = txtNama.getText().toString();
+        String alamat = txtAlamat.getText().toString();
+        String no_ktp = txtNoKTP.getText().toString();
+        String no_wa = txtNoWa.getText().toString();
+        String username = txtUsername.getText().toString();
+        String password = txtPassword.getText().toString();
+        Log.d("ASU", token +" " + id+" " + nama+" " + alamat+" " + no_wa+" " + no_ktp+" " + username+" " + password+" " + user.getNoKtpSales());
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<User> call = apiInterface.updateProfileSales(token, id, nama, alamat, no_wa, no_ktp, username, password, user.getNoKtpSales());
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                dialog.dismiss();
+                if (response.body().getMessage().equals("success")){
+                    Toast.makeText(EditProfileSalesActivity.this, "Profile Berhasil Diubah", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(EditProfileSalesActivity.this, SalesMenuActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    editor.putString(NAMA_USER, nama);
+                    editor.commit();
+                }else{
+                    Toast.makeText(EditProfileSalesActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(EditProfileSalesActivity.this, LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                dialog.dismiss();
+                t.printStackTrace();
+                Toast.makeText(EditProfileSalesActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+}

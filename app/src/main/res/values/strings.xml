@@ -4,4 +4,71 @@
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="btn_sign_in">Sign in</string>
+    <string name="lbl_mesin">No. Mesin</string>
+    <string name="lbl_nopol">No. Polisi</string>
+    <string name="lbl_no_rangka">No. Rangka</string>
+    <string name="lbl_merk">Merk</string>
+    <string name="lbl_tipe">Tipe</string>
+    <string name="lbl_tahun">Tahun</string>
+    <string name="lbl_hjm">HJM</string>
+    <string name="lbl_status">Status</string>
+
+    <string-array name="mobar">
+        <item>Mobar</item>
+        <item>Mokas</item>
+    </string-array>
+
+    <string-array name="caraBayar">
+        <item>Cash</item>
+        <item>Kredit</item>
+    </string-array>
+
+    <string-array name="txtAgama">
+        <item>Islam</item>
+        <item>Kristen</item>
+        <item>Katolik</item>
+        <item>Hindu</item>
+        <item>Budha</item>
+        <item>Konghucu</item>
+    </string-array>
+
+    <string name="otr"> Harga On The Road </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="bulan">
+        <item>Bulan</item>
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <string-array name="tahun">
+        <item>Tahun</item>
+        <item>2010</item>
+        <item>2011</item>
+        <item>2012</item>
+        <item>2013</item>
+        <item>2014</item>
+        <item>2015</item>
+        <item>2016</item>
+        <item>2017</item>
+        <item>2018</item>
+        <item>2019</item>
+        <item>2020</item>
+        <item>2021</item>
+        <item>2022</item>
+        <item>2023</item>
+    </string-array>
 </resources>
+

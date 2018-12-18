@@ -2,6 +2,7 @@ package com.yayanheryanto.larismotor.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,8 +18,9 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.activity.EditMotorActivity;
-import com.yayanheryanto.larismotor.activity.LoginActivity;
+import com.yayanheryanto.larismotor.view.owner.DetailMotorActivity;
+import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
+import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
@@ -38,11 +40,11 @@ import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHolder> {
 
-
     private Context mContext;
     private List<Motor> mList;
     private Activity parentActivity;
     private MotorAdapter adapter;
+    private ProgressDialog progressDialog = null;
 
     public MotorAdapter(Context mContext, List<Motor> mList, Activity parentActivity) {
         this.mContext = mContext;
@@ -60,11 +62,23 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
         return adapter;
     }
 
+
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(parentActivity);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Sedang Memproses..");
+        progressDialog.setCancelable(false);
+    }
+
+
     @Override
     public void onBindViewHolder(MotorAdapter.MotorViewHolder motorViewHolder, int i) {
+        initProgressDialog();
         final Motor motor = mList.get(i);
-        Picasso.get().load(BASE_URL+"storage/motor/"+motor.getGambar()).into(motorViewHolder.imageMotor);
-        motorViewHolder.textHjm.setText(""+motor.getHjm());
+        Picasso.get()
+                .load(BASE_URL+"storage/motor/"+motor.getGambar())
+                .into(motorViewHolder.imageMotor);
+        motorViewHolder.textHjm.setText(""+motor.getHarga());
         motorViewHolder.textNopol.setText(motor.getNoPolisi());
 
         motorViewHolder.imgEdit.setOnClickListener(new View.OnClickListener() {
@@ -80,19 +94,23 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
         motorViewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, "Detail", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext, DetailMotorActivity.class);
+                intent.putExtra(DATA_MOTOR, motor);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
             }
         });
 
         motorViewHolder.imgDeelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog dialog = new AlertDialog.Builder(parentActivity)
+                final AlertDialog dialog = new AlertDialog.Builder(parentActivity)
                         .setTitle("Konfirmasi Hapus")
                         .setMessage("Hapus Data Motor?")
                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                progressDialog.show();
                                 SharedPreferences pref = mContext.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
                                 final SharedPreferences.Editor editor = pref.edit();
                                 String id = pref.getString(ID_USER, "");
@@ -103,6 +121,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
                                 call.enqueue(new Callback<Motor>() {
                                     @Override
                                     public void onResponse(Call<Motor> call, Response<Motor> response) {
+                                        progressDialog.dismiss();
                                         if (response.body().getMessage().equals("success")){
                                             mList.remove(motor);
                                             adapter.notifyDataSetChanged();
@@ -120,6 +139,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
 
                                     @Override
                                     public void onFailure(Call<Motor> call, Throwable t) {
+                                        progressDialog.dismiss();
                                         t.printStackTrace();
                                         Toast.makeText(parentActivity, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
                                     }
