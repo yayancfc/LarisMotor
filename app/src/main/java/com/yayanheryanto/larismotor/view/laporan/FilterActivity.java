@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Sales;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.owner.OwnerMenuActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,15 +39,22 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
 
     private ImageView dari, ke;
     private EditText dariTxt, keTxt;
-    public static String tanggalDari = "kosong", tanggalKe = "kosong";
+    public static
+    String tanggalDari = "kosong", tanggalKe = "kosong", sales = "-1", kondisi = "-1", caraBayar = "-1";
 
     private int jenis;
     ArrayAdapter<String> salesAdapter;
 
     private Spinner spinnerSales;
+    private Spinner spinnerKondisi;
+    private Spinner spinnerCaraBayar;
+
+
+    private final List<Sales> saleses = new ArrayList<>();
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
@@ -75,11 +84,42 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
 
             @Override
             public void onClick(View v) {
+
+
+                if (spinnerSales.getSelectedItemPosition() != 0) {
+                    sales = saleses.get(spinnerSales.getSelectedItemPosition() - 1).getNoKtpSales();
+                } else {
+                    sales = "-1";
+                }
+
+
+                if (spinnerKondisi.getSelectedItemPosition() == 0) {
+                    kondisi = "-1";
+                } else if (spinnerKondisi.getSelectedItemPosition() == 1) {
+                    kondisi = "1";
+                } else {
+                    kondisi = "0";
+                }
+
+                if (spinnerCaraBayar.getSelectedItemPosition() == 0) {
+                    caraBayar = "-1";
+                } else if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
+                    caraBayar = "0";
+                } else {
+                    caraBayar = "1";
+                }
+
+
                 try {
                     if (tanggalDari.equals("kosong") || tanggalKe.equals("kosong") || (sql.parse(tanggalDari).after(sql.parse(tanggalKe)))) {
                         Toast.makeText(FilterActivity.this, "Data tanggal belum valid...", Toast.LENGTH_SHORT).show();
                     } else {
-                        startActivity(new Intent(FilterActivity.this, LaporanActivity.class));
+
+                        Intent intent = new Intent(FilterActivity.this, LaporanActivity.class);
+                        intent.putExtra("posSales", spinnerSales.getSelectedItemPosition());
+                        intent.putExtra("posKondisi", spinnerKondisi.getSelectedItemPosition());
+                        intent.putExtra("posCaraBayar", spinnerCaraBayar.getSelectedItemPosition());
+                        startActivity(intent);
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -129,15 +169,18 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
         spinnerSales = findViewById(R.id.spinner_sales);
         getSales();
 
-        final String[] kondisi = {"Pilih Kondisi","Mobar", "Mokas"};
-        Spinner spinnerMobar = findViewById(R.id.spinner_kondisi);
+        final String[] kondisi = {"Pilih Kondisi", "Mobar", "Mokas"};
+        spinnerKondisi = findViewById(R.id.spinner_kondisi);
         ArrayAdapter<String> kondisiAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, kondisi);
-        spinnerMobar.setAdapter(kondisiAdapter);
+        spinnerKondisi.setAdapter(kondisiAdapter);
 
-        final String[] caraBayar = {"Pilih Cara Bayar","Cash", "Kredit"};
-        Spinner spinnerCaraBayar = findViewById(R.id.spinner_metode_bayar);
+        final String[] caraBayar = {"Pilih Cara Bayar", "Cash", "Kredit"};
+        spinnerCaraBayar = findViewById(R.id.spinner_metode_bayar);
         ArrayAdapter<String> caraBayarAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, caraBayar);
         spinnerCaraBayar.setAdapter(caraBayarAdapter);
+
+
+
 
     }
 
@@ -181,14 +224,12 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
     private void getSales() {
 
 
-        final List<Sales> saleses = new ArrayList<>();
-
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = pref.edit();
         String token = pref.getString(ACCESTOKEN, "");
 
         final ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Sales>> call = apiInterface.getSales(token);
+        Call<List<Sales>> call = apiInterface.getFilterSales(token);
         call.enqueue(new Callback<List<Sales>>() {
             @Override
             public void onResponse(Call<List<Sales>> call, Response<List<Sales>> response) {
@@ -198,11 +239,11 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
                     saleses.add(salesNow);
 
                 }
-                String[] merkArray = new String[saleses.size()+1];
+                String[] merkArray = new String[saleses.size() + 1];
 
                 int i = 1;
 
-                merkArray[0] = "Pilih Sales" ;
+                merkArray[0] = "Pilih Sales";
 
                 for (Sales salesNow : saleses) {
 
@@ -214,6 +255,14 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
                 salesAdapter = new ArrayAdapter<>(FilterActivity.this, android.R.layout.simple_spinner_item, merkArray);
                 spinnerSales.setAdapter(salesAdapter);
 
+                Bundle bundle = getIntent().getExtras() ;
+
+                if (bundle.getBoolean("back")) {
+                    spinnerSales.setSelection(bundle.getInt("posSales"));
+                    spinnerKondisi.setSelection(bundle.getInt("posKondisi"));
+                    spinnerCaraBayar.setSelection(bundle.getInt("posCaraBayar"));
+                }
+
 
             }
 
@@ -224,4 +273,8 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(FilterActivity.this, OwnerMenuActivity.class));
+    }
 }

@@ -30,6 +30,8 @@ public class LaporanActivity extends AppCompatActivity {
     private LaporanAdapter adapter;
     private ProgressDialog dialog;
 
+    private int posSales, posKondisi, posCaraBayar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,17 @@ public class LaporanActivity extends AppCompatActivity {
 
         getTransaksi();
 
+        Bundle bundle = getIntent().getExtras();
+
+        posSales = bundle.getInt("posSales");
+        posKondisi = bundle.getInt("posKondisi");
+        posCaraBayar = bundle.getInt("posCaraBayar");
+
+        Log.v("cak",posSales+"") ;
+        Log.v("cak",posKondisi+"") ;
+        Log.v("cak",posCaraBayar+"") ;
+
+
     }
 
     private void initProgressDialog() {
@@ -65,7 +78,16 @@ public class LaporanActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
 
-        Call<List<Transaksi>> call = apiInterface.getTransaksi(FilterActivity.tanggalDari,FilterActivity.tanggalKe);
+        Log.v("cik",FilterActivity.sales) ;
+        Log.v("cik",FilterActivity.kondisi) ;
+        Log.v("cik",FilterActivity.caraBayar) ;
+
+        Call<List<Transaksi>> call = apiInterface.getTransaksi(
+                FilterActivity.tanggalDari, FilterActivity.tanggalKe,
+                FilterActivity.sales, FilterActivity.kondisi, FilterActivity.caraBayar);
+
+
+
         call.enqueue(new Callback<List<Transaksi>>() {
             @Override
             public void onResponse(Call<List<Transaksi>> call, Response<List<Transaksi>> response) {
@@ -119,6 +141,14 @@ public class LaporanActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(LaporanActivity.this, FilterActivity.class));
+        Intent intent = new Intent(LaporanActivity.this, FilterActivity.class);
+
+
+
+        intent.putExtra("posSales", posSales);
+        intent.putExtra("posKondisi", posKondisi);
+        intent.putExtra("posCaraBayar", posCaraBayar);
+        intent.putExtra("back", true);
+        startActivity(intent);
     }
 }

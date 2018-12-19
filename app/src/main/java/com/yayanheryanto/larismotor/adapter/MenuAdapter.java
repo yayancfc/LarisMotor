@@ -45,6 +45,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, menu.getmContext());
+                intent.putExtra("back",false) ;
                 mContext.startActivity(intent);
 
             }
