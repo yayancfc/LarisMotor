@@ -1,13 +1,17 @@
 package com.yayanheryanto.larismotor.view.owner;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
+import android.app.SearchManager;
+import android.content.Context;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -23,27 +27,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CustomerActivity extends AppCompatActivity {
+public class CariCustomerActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private CustomerAdapter adapter;
     private LinearLayoutManager layoutManager;
     private ProgressDialog dialog;
-    private SearchView searchView;
-    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer);
-
+        setContentView(R.layout.activity_cari_customer);
         initProgressDialog();
         recyclerView = findViewById(R.id.recyclerview);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        getCustomer();
     }
 
     private void initProgressDialog() {
@@ -53,19 +52,23 @@ public class CustomerActivity extends AppCompatActivity {
         dialog.setCancelable(false);
     }
 
-    private void getCustomer(){
+    private void getCustomer(String nama){
         dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Customer>> call = apiInterface.getCustomer();
+        Call<List<Customer>> call = apiInterface.searchCustomer(nama);
         call.enqueue(new Callback<List<Customer>>() {
             @Override
             public void onResponse(Call<List<Customer>> call, Response<List<Customer>> response) {
                 dialog.dismiss();
-                List<Customer> list = response.body();
+                if (response.body().isEmpty()){
+                    Toast.makeText(CariCustomerActivity.this, "Data Tidak Ditemukan", Toast.LENGTH_SHORT).show();
+                }else {
+                    List<Customer> list = response.body();
 
-                adapter = new CustomerAdapter(getApplicationContext(), list);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+                    adapter = new CustomerAdapter(getApplicationContext(), list);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
 
             }
 
@@ -73,37 +76,39 @@ public class CustomerActivity extends AppCompatActivity {
             public void onFailure(Call<List<Customer>> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
-                Toast.makeText(CustomerActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CariCustomerActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_cari, menu);
-        menuItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView)menuItem.getActionView();
-        searchView.setIconifiedByDefault(false);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_cari_act, menu);
+
+        MenuItem searchMenu = menu.findItem(R.id.action_search_act);
+        SearchView searchView = (SearchView)searchMenu.getActionView();
+        searchView.setQueryHint("Masukan Nama Customer");
+        searchView.setIconified(false);
+        searchMenu.expandActionView();
+        searchView.setQuery("",false);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (TextUtils.getTrimmedLength(newText) > 0) {
+                    getCustomer(newText);
+                }
+
+                return false;
+            }
+        });
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                Intent intent = new Intent(CustomerActivity.this, CariCustomerActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        searchView.setIconifiedByDefault(true);
-        menuItem.collapseActionView();
-        searchView.onActionViewExpanded();
     }
 }

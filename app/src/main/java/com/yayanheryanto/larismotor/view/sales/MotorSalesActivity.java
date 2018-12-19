@@ -15,6 +15,8 @@ import com.yayanheryanto.larismotor.adapter.MotorSalesAdapter;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.owner.CariMotorActivity;
+import com.yayanheryanto.larismotor.view.owner.MotorActivity;
 
 import java.util.List;
 
@@ -91,6 +93,11 @@ public class MotorSalesActivity extends AppCompatActivity {
             case R.id.tambah:
                 Intent intent = new Intent(MotorSalesActivity.this, AddMotorSalesActivity.class);
                 startActivity(intent);
+                return true;
+
+            case R.id.action_search:
+                Intent intent1 = new Intent(MotorSalesActivity.this, CariMotorActivity.class);
+                startActivity(intent1);
                 return true;
 
             default:

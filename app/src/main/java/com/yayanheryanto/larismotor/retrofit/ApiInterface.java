@@ -337,4 +337,18 @@ public interface ApiInterface {
     Call<List<Transaksi>> getTransaksi(@Query("dari") String dari,
                                        @Query("ke") String ke);
 
+    @FormUrlEncoded
+    @POST("api/searchCustomer")
+    Call<List<Customer>> searchCustomer(@Field("nama") String nama);
+
+
+    @FormUrlEncoded
+    @POST("api/searchNoPol")
+    Call<List<Motor>> searchNoPol(@Field("no_polisi") String no);
+
+
+    @FormUrlEncoded
+    @POST("api/searchNoMesin")
+    Call<List<Motor>> searchNoMesin(@Field("no_mesin") String no);
+
 }

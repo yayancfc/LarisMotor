@@ -1,13 +1,14 @@
 package com.yayanheryanto.larismotor.view.owner;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MotorActivity extends AppCompatActivity {
+public class CariMotorActivity extends AppCompatActivity {
 
 
     private RecyclerView recyclerView;
@@ -36,15 +37,13 @@ public class MotorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_motor);
+        setContentView(R.layout.activity_cari_motor);
 
         initProgressDialog();
         recyclerView = findViewById(R.id.rvMotor);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        getMotor();
     }
 
 
@@ -55,19 +54,28 @@ public class MotorActivity extends AppCompatActivity {
         dialog.setCancelable(false);
     }
 
-    private void getMotor(){
+    private void getMotor(String no){
         dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Motor>> call = apiInterface.getMotor();
+        Call<List<Motor>> call;
+        if (no.contains(" ")) {
+            call = apiInterface.searchNoPol(no);
+        }else{
+            call = apiInterface.searchNoMesin(no);
+        }
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
                 dialog.dismiss();
-                List<Motor> list = response.body();
+                if (response.body().isEmpty()){
+                    Toast.makeText(CariMotorActivity.this, "Data Motor Tidak Ditemukan", Toast.LENGTH_SHORT).show();
+                }else {
+                    List<Motor> list = response.body();
 
-                adapter = new MotorAdapter(getApplicationContext(),list, MotorActivity.this);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+                    adapter = new MotorAdapter(getApplicationContext(), list, CariMotorActivity.this);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
 
             }
 
@@ -75,44 +83,39 @@ public class MotorActivity extends AppCompatActivity {
             public void onFailure(Call<List<Motor>> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
-                Toast.makeText(MotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CariMotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_motor, menu);
-        menuItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView)menuItem.getActionView();
-        searchView.setIconifiedByDefault(false);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_cari_act, menu);
 
-        return true;
-    }
+        MenuItem searchMenu = menu.findItem(R.id.action_search_act);
+        SearchView searchView = (SearchView)searchMenu.getActionView();
+        searchView.setQueryHint("Masukan No.Polisi atau No.Mesin");
+        searchView.setIconified(false);
+        searchMenu.expandActionView();
+        searchView.setQuery("",false);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.tambah:
-                Intent intent = new Intent(MotorActivity.this, AddMotorActivity.class);
-                startActivity(intent);
-                return true;
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
 
-            case R.id.action_search:
-                Intent intent1 = new Intent(MotorActivity.this, CariMotorActivity.class);
-                startActivity(intent1);
-                return true;
+                return false;
+            }
 
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (TextUtils.getTrimmedLength(newText) > 0) {
+                    getMotor(newText);
+                }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        searchView.setIconifiedByDefault(true);
-        menuItem.collapseActionView();
-        searchView.onActionViewExpanded();
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 }

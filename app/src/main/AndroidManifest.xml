@@ -53,7 +53,9 @@
         <activity
             android:name=".view.laporan.LaporanActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".view.laporan.FilterActivity"></activity>
+        <activity android:name=".view.laporan.FilterActivity" />
+        <activity android:name=".view.owner.CariCustomerActivity" />
+        <activity android:name=".view.owner.CariMotorActivity"></activity>
     </application>
 
 </manifest>
