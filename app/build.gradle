@@ -50,4 +50,7 @@ dependencies {
 
     //table
     implementation 'de.codecrafters.tableview:tableview:2.8.0'
+
+    //compressor
+    implementation 'id.zelory:compressor:2.1.0'
 }

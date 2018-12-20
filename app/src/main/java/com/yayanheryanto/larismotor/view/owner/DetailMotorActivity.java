@@ -86,7 +86,7 @@ public class DetailMotorActivity extends AppCompatActivity {
                 cicilan.setText("Rp." +motor.getCicilan());
                 tenor.setText(motor.getTenor() + " Bulan");
 
-                if (motor.getStatus().equals(1)) {
+                if (motor.getStatus().equals(0)) {
                     status.setText("Tersedia");
                 }else{
                     status.setText("Sold Out");

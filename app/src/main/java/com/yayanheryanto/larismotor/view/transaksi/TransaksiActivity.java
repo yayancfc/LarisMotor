@@ -237,6 +237,10 @@ public class TransaksiActivity extends AppCompatActivity {
                     tenor.setVisibility(View.VISIBLE);
                     cicilan.setVisibility(View.VISIBLE);
 
+                    dp.setEnabled(true);
+                    tenor.setEnabled(true);
+                    cicilan.setEnabled(true);
+
                     if (spinnerMobar.getSelectedItemPosition() == 1) {
 
                         subsidi.setVisibility(View.VISIBLE);
@@ -502,10 +506,15 @@ public class TransaksiActivity extends AppCompatActivity {
             }
         });
 
+
         spinnerTipe.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                idTipe = tipes.get(i).getIdTipe();
+
+                if (tipes.size() != 0) {
+                    idTipe = tipes.get(i).getIdTipe();
+                }
+
             }
 
             @Override

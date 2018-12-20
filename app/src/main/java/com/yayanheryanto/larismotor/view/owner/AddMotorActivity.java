@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -29,12 +31,15 @@ import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.zelory.compressor.Compressor;
 import in.myinnos.awesomeimagepicker.activities.AlbumSelectActivity;
 import in.myinnos.awesomeimagepicker.helpers.ConstantsCustomGallery;
 import in.myinnos.awesomeimagepicker.models.Image;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -254,6 +259,21 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
         for (int i = 0; i < images.size(); i++) {
             File file = new File(images.get(i).path);
+            try {
+
+                new Compressor(this)
+                        .setMaxWidth(640)
+                        .setMaxHeight(480)
+                        .setQuality(75)
+                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                        .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                        .compressToFile(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
             builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
             Log.d(DEBUG, file.getName());
         }
@@ -266,6 +286,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<Motor> call, Response<Motor> response) {
                 dialog.dismiss();
                 Log.d(DEBUG, String.valueOf(response.body().getMessage()));
+                Log.v("cik",response.errorBody()+"") ;
                 if (response.body().getMessage().equals("success")){
                     Toast.makeText(AddMotorActivity.this, "Motor Berhasil Ditambah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddMotorActivity.this, MotorActivity.class);
