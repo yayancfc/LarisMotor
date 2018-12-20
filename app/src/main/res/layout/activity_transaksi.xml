@@ -145,7 +145,7 @@
                 android:visibility="gone" />
 
             <EditText
-                android:id="@+id/subsidi"
+                android:id="@+id/cicilan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Cicilan"
@@ -156,6 +156,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Tenor"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/pencairan_leasing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pencairan Leasing"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/subsidi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Subsidi"
                 android:visibility="gone" />
 
 

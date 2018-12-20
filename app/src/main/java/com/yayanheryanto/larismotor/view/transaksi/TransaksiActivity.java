@@ -40,13 +40,15 @@ public class TransaksiActivity extends AppCompatActivity {
 
 
     Spinner spinnerCaraBayar;
-    EditText subsidi;
+    EditText cicilan;
     EditText tenor;
     EditText dp;
     EditText harga;
     EditText nomorMesin;
     EditText nomorRangka;
     EditText nomorPolisi;
+    EditText subsidi;
+    EditText pencairanLeasing;
     Spinner spinnerMerk;
     Spinner spinnerTipe;
     EditText tahun;
@@ -70,7 +72,9 @@ public class TransaksiActivity extends AppCompatActivity {
         harga = findViewById(R.id.harga);
         dp = findViewById(R.id.dp);
         tenor = findViewById(R.id.tenor);
+        cicilan = findViewById(R.id.cicilan);
         subsidi = findViewById(R.id.subsidi);
+        pencairanLeasing = findViewById(R.id.pencairan_leasing);
         nomorMesin = findViewById(R.id.nomor_mesin_trans);
         nomorRangka = findViewById(R.id.nomor_rangka_trans);
         nomorPolisi = findViewById(R.id.nomor_polisi_trans);
@@ -90,7 +94,7 @@ public class TransaksiActivity extends AppCompatActivity {
         tanggal.setText(df.format(Calendar.getInstance().getTime()));
 
         final String[] mobarArray = {"mobar", "mokas"};
-        Spinner spinnerMobar = findViewById(R.id.mobar);
+        final Spinner spinnerMobar = findViewById(R.id.mobar);
         ArrayAdapter<String> mobar = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mobarArray);
         spinnerMobar.setAdapter(mobar);
         spinnerMobar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -109,6 +113,22 @@ public class TransaksiActivity extends AppCompatActivity {
                     checklist.setVisibility(GONE);
                     kondisi = 1;
 
+                    if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
+
+                        subsidi.setVisibility(View.VISIBLE);
+                        pencairanLeasing.setVisibility(GONE);
+
+                    }
+                    else {
+
+                        subsidi.setVisibility(View.GONE);
+                        pencairanLeasing.setVisibility(GONE);
+
+
+                    }
+
+
+
                 } else {
                     nomorPolisi.setVisibility(View.VISIBLE);
                     spinnerMerk.setEnabled(false);
@@ -119,6 +139,21 @@ public class TransaksiActivity extends AppCompatActivity {
                     hargaJualMinimum.setEnabled(false);
                     checklist.setVisibility(View.VISIBLE);
                     kondisi = 0;
+
+                    if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
+
+                        subsidi.setVisibility(View.GONE);
+                        pencairanLeasing.setVisibility(View.VISIBLE);
+
+                    }
+                    else {
+
+                        subsidi.setVisibility(View.GONE);
+                        pencairanLeasing.setVisibility(GONE);
+
+
+                    }
+
                 }
 
             }
@@ -143,12 +178,26 @@ public class TransaksiActivity extends AppCompatActivity {
                     harga.setVisibility(View.VISIBLE);
                     dp.setVisibility(GONE);
                     tenor.setVisibility(GONE);
-                    subsidi.setVisibility(GONE);
+                    cicilan.setVisibility(GONE);
+                    subsidi.setVisibility(View.GONE);
+                    pencairanLeasing.setVisibility(View.GONE);
                 } else {
                     harga.setVisibility(GONE);
                     dp.setVisibility(View.VISIBLE);
                     tenor.setVisibility(View.VISIBLE);
-                    subsidi.setVisibility(View.VISIBLE);
+                    cicilan.setVisibility(View.VISIBLE);
+
+                    if (spinnerMobar.getSelectedItemPosition() == 0)
+                    {
+
+                        subsidi.setVisibility(View.VISIBLE);
+                    }
+                    else {
+
+                        pencairanLeasing.setVisibility(View.VISIBLE);
+                    }
+
+
                 }
             }
 
@@ -202,9 +251,9 @@ public class TransaksiActivity extends AppCompatActivity {
                             tenor.setTextColor(Color.BLACK);
 
 
-                            subsidi.setText("Cicilan : Rp. " + motor.getCicilan());
-                            subsidi.setEnabled(false);
-                            subsidi.setTextColor(Color.BLACK);
+                            cicilan.setText("Cicilan : Rp. " + motor.getCicilan());
+                            cicilan.setEnabled(false);
+                            cicilan.setTextColor(Color.BLACK);
 
                             Call<List<MerkTipe>> call2 = apiInterface.getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
                             call2.enqueue(new Callback<List<MerkTipe>>() {
@@ -278,7 +327,7 @@ public class TransaksiActivity extends AppCompatActivity {
             tahunMotor = tahun.getText().toString();
             hjm = hargaJualMinimum.getText().toString();
             dpMotor = dp.getText().toString();
-            cicilanMotor = subsidi.getText().toString();
+            cicilanMotor = cicilan.getText().toString();
             tenorMotor = tenor.getText().toString();
             hargaTerjual = harga.getText().toString();
 
