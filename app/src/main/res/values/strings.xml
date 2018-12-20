@@ -19,6 +19,7 @@
     </string-array>
 
     <string-array name="caraBayar">
+        <item>Pilih Cara Bayar</item>
         <item>Cash</item>
         <item>Kredit</item>
     </string-array>
