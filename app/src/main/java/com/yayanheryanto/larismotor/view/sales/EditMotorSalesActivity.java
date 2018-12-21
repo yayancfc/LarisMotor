@@ -6,8 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,14 +23,13 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.LoginActivity;
-import com.yayanheryanto.larismotor.view.owner.MotorActivity;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,7 +66,9 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
     private int merkMotor, tipeMotor;
     private ProgressDialog dialog;
     private Motor motor;
-    private String s1,s2;
+    private String s1, s2;
+    private TextInputLayout terjual;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         cicilan = findViewById(R.id.cicilan);
         tenor = findViewById(R.id.tenor);
         dp = findViewById(R.id.dp);
-
+        terjual = findViewById(R.id.terjual);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
@@ -97,11 +99,11 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
 
         getDataFromIntent();
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line);
-        adapter2 = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
+        adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
 
 
-        getMerkById(String.valueOf(motor.getIdMerk()),String.valueOf(motor.getIdTipe()));
+        getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
         getMerk();
 
         spinnerMerk.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -138,34 +140,67 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         Bundle data = getIntent().getExtras();
         motor = (Motor) data.getParcelable(DATA_MOTOR);
         no_mesin.setText(motor.getNoMesin());
-        no_polisi.setText(""+motor.getNoPolisi());
+        no_polisi.setText("" + motor.getNoPolisi());
         no_rangka.setText(motor.getNoRangka());
-        tahun.setText(""+motor.getTahun());
-        harga.setText(""+motor.getHarga());
-        if (motor.getHargaTerjual()==null){
+        tahun.setText("" + motor.getTahun());
+        harga.setText("" + motor.getHarga());
+
+
+        if (motor.getHargaTerjual() == null || motor.getHargaTerjual() == 0) {
             harga_terjual.setText("");
-        }else{
-            harga_terjual.setText(""+motor.getHargaTerjual());
+        } else {
+            harga_terjual.setText("" + motor.getHargaTerjual());
         }
 
-        dp.setText(""+motor.getDp());
-        cicilan.setText(""+motor.getCicilan());
-        tenor.setText(""+motor.getTenor());
+        if (motor.getDp() == null || motor.getDp() == 0) {
+            dp.setText("");
+        } else {
+            dp.setText("" + motor.getDp());
+        }
 
-        if (motor.getStatus().equals(1)){
+        if (motor.getCicilan() == null || motor.getCicilan() == 0) {
+            cicilan.setText("");
+        } else {
+            cicilan.setText("" + motor.getCicilan());
+        }
+
+        if (motor.getTenor() == null || motor.getTenor() == 0) {
+            tenor.setText("");
+        } else {
+            tenor.setText("" + motor.getTenor());
+        }
+
+        if (motor.getStatus().equals(0)) {
             status.check(R.id.radio_available);
-        }else {
-            status.check(R.id.radio_not_available);
+            terjual.setVisibility(View.GONE);
+
+        } else {
+            status.check(R.id.radio_sold_out);
+            terjual.setVisibility(View.VISIBLE);
         }
 
-        if (motor.getGambar()!=null){
-            Picasso.get().load(BASE_URL+"storage/motor/"+motor.getGambar()).into(image1);
+        status.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (status.getCheckedRadioButtonId() == R.id.radio_available) {
+                    terjual.setVisibility(View.GONE);
+                } else {
+                    terjual.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
+
+        if (motor.getGambar() != null) {
+            Picasso.get().load(BASE_URL + "storage/motor/" + motor.getGambar()).into(image1);
         }
-        if (motor.getGambar1()!=null){
-            Picasso.get().load(BASE_URL+"storage/motor/"+motor.getGambar1()).into(image2);
+        if (motor.getGambar1() != null) {
+            Picasso.get().load(BASE_URL + "storage/motor/" + motor.getGambar1()).into(image2);
         }
-        if (motor.getGambar2()!=null){
-            Picasso.get().load(BASE_URL+"storage/motor/"+motor.getGambar2()).into(image3);
+        if (motor.getGambar2() != null) {
+            Picasso.get().load(BASE_URL + "storage/motor/" + motor.getGambar2()).into(image3);
         }
     }
 
@@ -187,7 +222,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
                 Log.d(DEBUG, String.valueOf(response.body().size()));
                 merk = response.body();
                 if (merk != null) {
-                    for (Merk merkMotor : merk){
+                    for (Merk merkMotor : merk) {
                         adapter.add(merkMotor.getNamaMerk());
 
                     }
@@ -240,7 +275,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
                 tipe = response.body();
                 if (tipe != null) {
                     adapter2.clear();
-                    for (Tipe tipeMotor : tipe){
+                    for (Tipe tipeMotor : tipe) {
                         adapter2.add(tipeMotor.getNamaTipe());
                     }
 
@@ -261,14 +296,14 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btnImage :
+        switch (view.getId()) {
+            case R.id.btnImage:
                 Intent intent = new Intent(this, AlbumSelectActivity.class);
                 intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 3); // set limit for image selection
                 startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
                 break;
 
-            case R.id.btnSave :
+            case R.id.btnSave:
                 uploadImage();
                 break;
         }
@@ -284,13 +319,13 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
 
             for (int i = 0; i < images.size(); i++) {
                 Uri uri = Uri.fromFile(new File(images.get(i).path));
-                if (i==0){
+                if (i == 0) {
                     image1.setImageURI(uri);
                 }
-                if (i==1){
+                if (i == 1) {
                     image2.setImageURI(uri);
                 }
-                if (i==2){
+                if (i == 2) {
                     image3.setImageURI(uri);
                 }
                 Log.d(DEBUG, String.valueOf(uri));
@@ -307,9 +342,9 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         int selectedId = status.getCheckedRadioButtonId();
         RadioButton radioButton = (RadioButton) findViewById(selectedId);
         String tersedia = radioButton.getText().toString();
-        String statusMotor = "0";
-        if (tersedia.equalsIgnoreCase("tersedia")){
-            statusMotor = "1";
+        String statusMotor = "1";
+        if (tersedia.equalsIgnoreCase("tersedia")) {
+            statusMotor = "0";
         }
 
         String mesin = no_mesin.getText().toString();
@@ -325,31 +360,31 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
 
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart("no_mesin_awal",motor.getNoMesin());
-        builder.addFormDataPart("no_polisi",polisi);
-        builder.addFormDataPart("no_mesin",mesin);
-        builder.addFormDataPart("no_rangka",rangka);
-        builder.addFormDataPart("tahun",tahunMotor);
-        builder.addFormDataPart("status",statusMotor);
-        builder.addFormDataPart("tipe",String.valueOf(tipeMotor));
-        builder.addFormDataPart("merk",String.valueOf(merkMotor));
-        builder.addFormDataPart("harga",hargaMotor);
-        builder.addFormDataPart("harga_terjual",hargaTerjual);
-        builder.addFormDataPart("dp",dpMotor);
-        builder.addFormDataPart("cicilan",cicilanMotor);
-        builder.addFormDataPart("tenor",tenorMotor);
+        builder.addFormDataPart("no_mesin_awal", motor.getNoMesin());
+        builder.addFormDataPart("no_polisi", polisi);
+        builder.addFormDataPart("no_mesin", mesin);
+        builder.addFormDataPart("no_rangka", rangka);
+        builder.addFormDataPart("tahun", tahunMotor);
+        builder.addFormDataPart("status", statusMotor);
+        builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
+        builder.addFormDataPart("merk", String.valueOf(merkMotor));
+        builder.addFormDataPart("harga", hargaMotor);
+        builder.addFormDataPart("harga_terjual", hargaTerjual);
+        builder.addFormDataPart("dp", dpMotor);
+        builder.addFormDataPart("cicilan", cicilanMotor);
+        builder.addFormDataPart("tenor", tenorMotor);
 
-        if (motor.getGambar()!=null){
-            builder.addFormDataPart("gambar",motor.getGambar());
+        if (motor.getGambar() != null) {
+            builder.addFormDataPart("gambar", motor.getGambar());
         }
-        if (motor.getGambar1()!=null){
-            builder.addFormDataPart("gambar1",motor.getGambar1());
+        if (motor.getGambar1() != null) {
+            builder.addFormDataPart("gambar1", motor.getGambar1());
         }
-        if (motor.getGambar2()!=null){
-            builder.addFormDataPart("gambar2",motor.getGambar2());
+        if (motor.getGambar2() != null) {
+            builder.addFormDataPart("gambar2", motor.getGambar2());
         }
 
-        if (images!=null) {
+        if (images != null) {
             for (int i = 0; i < images.size(); i++) {
                 File file = new File(images.get(i).path);
                 builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
@@ -365,13 +400,13 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
             public void onResponse(Call<Motor> call, Response<Motor> response) {
                 dialog.dismiss();
                 Log.d(DEBUG, String.valueOf(response.body().getMessage()));
-                if (response.body().getMessage().equals("success")){
+                if (response.body().getMessage().equals("success")) {
                     Toast.makeText(EditMotorSalesActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditMotorSalesActivity.this, MotorSalesActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                }else{
+                } else {
                     Toast.makeText(EditMotorSalesActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditMotorSalesActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

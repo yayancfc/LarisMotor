@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,12 +19,12 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.owner.DetailMotorActivity;
-import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
-import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.view.owner.DetailMotorActivity;
+import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
 
 import java.util.List;
 
@@ -76,10 +77,19 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
         initProgressDialog();
         final Motor motor = mList.get(i);
         Picasso.get()
-                .load(BASE_URL+"storage/motor/"+motor.getGambar())
+                .load(BASE_URL + "storage/motor/" + motor.getGambar())
                 .into(motorViewHolder.imageMotor);
-        motorViewHolder.textHjm.setText(""+motor.getHarga());
+        motorViewHolder.textHjm.setText("" + motor.getHarga());
         motorViewHolder.textNopol.setText(motor.getNoPolisi());
+
+        if (motor.getStatus().equals(0)) {
+            motorViewHolder.txtStatus.setText("Tersedia");
+            motorViewHolder.txtStatus.setTextColor(Color.parseColor("#388E3C"));
+        } else {
+            motorViewHolder.txtStatus.setText("Sold Out");
+            motorViewHolder.txtStatus.setTextColor(Color.parseColor("#F44336"));
+        }
+
 
         motorViewHolder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,12 +132,12 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
                                     @Override
                                     public void onResponse(Call<Motor> call, Response<Motor> response) {
                                         progressDialog.dismiss();
-                                        if (response.body().getMessage().equals("success")){
+                                        if (response.body().getMessage().equals("success")) {
                                             mList.remove(motor);
                                             adapter.notifyDataSetChanged();
                                             Toast.makeText(parentActivity, "Data Motor Berhasil Dihapus", Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            editor.putString(ID_USER,"");
+                                        } else {
+                                            editor.putString(ID_USER, "");
                                             editor.putString(ACCESTOKEN, "");
                                             editor.commit();
                                             Toast.makeText(parentActivity, "Token Tidak Valid", Toast.LENGTH_SHORT).show();
@@ -169,7 +179,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
     public class MotorViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageMotor, imgDeelete, imgEdit;
-        private TextView textNopol, textHjm;
+        private TextView textNopol, textHjm, txtStatus;
         private View view;
 
         public MotorViewHolder(View itemView) {
@@ -181,6 +191,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             imgEdit = itemView.findViewById(R.id.imgEdit);
             textNopol = itemView.findViewById(R.id.txt_plat);
             textHjm = itemView.findViewById(R.id.txt_hjm);
+            txtStatus = itemView.findViewById(R.id.txt_status);
         }
     }
 }

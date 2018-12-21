@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -65,6 +66,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private RadioGroup status;
     private int merkMotor, tipeMotor;
     private ProgressDialog dialog;
+    private TextInputLayout terjual;
 
 
     @Override
@@ -90,6 +92,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         cicilan = findViewById(R.id.cicilan);
         tenor = findViewById(R.id.tenor);
         dp = findViewById(R.id.dp);
+        terjual = findViewById(R.id.terjual);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
@@ -122,6 +125,20 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
+
+        status.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (status.getCheckedRadioButtonId() == R.id.radio_available) {
+                    terjual.setVisibility(View.GONE);
+                } else {
+                    terjual.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
@@ -223,9 +240,9 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         int selectedId = status.getCheckedRadioButtonId();
         RadioButton radioButton = (RadioButton) findViewById(selectedId);
         String tersedia = radioButton.getText().toString();
-        String statusMotor = "0";
+        String statusMotor = "1";
         if (tersedia.equalsIgnoreCase("tersedia")){
-            statusMotor = "1";
+            statusMotor = "0";
         }
 
         String mesin = no_mesin.getText().toString();

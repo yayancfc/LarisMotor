@@ -102,19 +102,7 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
-
-                    <EditText
-                        android:id="@+id/harga_terjual"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Harga Terjual"
-                        android:inputType="number" />
-
-                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -218,10 +206,10 @@
                             android:layout_height="0dp" />
 
                         <android.support.v7.widget.AppCompatRadioButton
-                            android:id="@+id/radio_not_available"
+                            android:id="@+id/radio_sold_out"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tidak Tersedia"
+                            android:text="Sold Out"
                             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                             android:textColor="@color/grey_90" />
 
@@ -229,6 +217,20 @@
 
                 </LinearLayout>
 
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/terjual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <EditText
+                        android:id="@+id/harga_terjual"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Harga Terjual"
+                        android:inputType="number" />
+
+                </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

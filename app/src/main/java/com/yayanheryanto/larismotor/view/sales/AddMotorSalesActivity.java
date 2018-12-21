@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,6 +63,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     private RadioGroup status;
     private int merkMotor, tipeMotor;
     private ProgressDialog dialog;
+    private TextInputLayout terjual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         cicilan = findViewById(R.id.cicilan);
         tenor = findViewById(R.id.tenor);
         dp = findViewById(R.id.dp);
+        terjual = findViewById(R.id.terjual);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
@@ -116,8 +119,24 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
             }
         });
+
+        status.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (status.getCheckedRadioButtonId() == R.id.radio_available) {
+                    terjual.setVisibility(View.GONE);
+                } else {
+                    terjual.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+
+
     }
 
     private void initProgressDialog() {
@@ -215,9 +234,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         int selectedId = status.getCheckedRadioButtonId();
         RadioButton radioButton = (RadioButton) findViewById(selectedId);
         String tersedia = radioButton.getText().toString();
-        String statusMotor = "0";
+        String statusMotor = "1";
         if (tersedia.equalsIgnoreCase("tersedia")){
-            statusMotor = "1";
+            statusMotor = "0";
         }
 
         String mesin = no_mesin.getText().toString();

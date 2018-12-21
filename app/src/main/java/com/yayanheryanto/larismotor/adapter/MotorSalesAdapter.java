@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,12 +19,12 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
+import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.view.owner.DetailMotorActivity;
 import com.yayanheryanto.larismotor.view.sales.EditMotorSalesActivity;
-import com.yayanheryanto.larismotor.model.Motor;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
-public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.MotorViewHolder>{
+public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.MotorViewHolder> {
 
 
     private Context mContext;
@@ -73,16 +74,23 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
     }
 
 
-
     @Override
     public void onBindViewHolder(@NonNull MotorViewHolder holder, int position) {
         initProgressDialog();
         final Motor motor = mList.get(position);
         Picasso.get()
-                .load(BASE_URL+"storage/motor/"+motor.getGambar())
+                .load(BASE_URL + "storage/motor/" + motor.getGambar())
                 .into(holder.imageMotor);
-        holder.textHjm.setText(""+motor.getHarga());
+        holder.textHjm.setText("" + motor.getHarga());
         holder.textNopol.setText(motor.getNoPolisi());
+
+        if (motor.getStatus().equals(0)) {
+            holder.txtStatus.setText("Tersedia");
+            holder.txtStatus.setTextColor(Color.parseColor("#388E3C"));
+        } else {
+            holder.txtStatus.setText("Sold Out");
+            holder.txtStatus.setTextColor(Color.parseColor("#F44336"));
+        }
 
 
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
@@ -116,12 +124,12 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
                                     @Override
                                     public void onResponse(Call<Motor> call, Response<Motor> response) {
                                         progressDialog.dismiss();
-                                        if (response.body().getMessage().equals("success")){
+                                        if (response.body().getMessage().equals("success")) {
                                             mList.remove(motor);
                                             adapter.notifyDataSetChanged();
                                             Toast.makeText(parentActivity, "Data Motor Berhasil Dihapus", Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            editor.putString(ID_USER,"");
+                                        } else {
+                                            editor.putString(ID_USER, "");
                                             editor.putString(ACCESTOKEN, "");
                                             editor.commit();
                                             Toast.makeText(parentActivity, "Token Tidak Valid", Toast.LENGTH_SHORT).show();
@@ -173,7 +181,8 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
 
 
         private ImageView imageMotor, imgDeelete, imgEdit;
-        private TextView textNopol, textHjm;
+        private TextView textNopol, textHjm, txtStatus;
+        ;
         private View view;
 
         public MotorViewHolder(View itemView) {
@@ -186,6 +195,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
             imgEdit = itemView.findViewById(R.id.imgEdit);
             textNopol = itemView.findViewById(R.id.txt_plat);
             textHjm = itemView.findViewById(R.id.txt_hjm);
+            txtStatus = itemView.findViewById(R.id.txt_status);
 
         }
     }
