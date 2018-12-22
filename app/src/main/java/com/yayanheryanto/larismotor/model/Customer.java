@@ -38,9 +38,9 @@ public class Customer implements Parcelable {
     @SerializedName("facebook")
     @Expose
     private String facebook;
-    @SerializedName("message")
+    @SerializedName("jumlah_pembelian")
     @Expose
-    private String message;
+    private String jumlahPembelian;
 
     public String getNoKtp() {
         return noKtp;
@@ -122,12 +122,12 @@ public class Customer implements Parcelable {
         this.facebook = facebook;
     }
 
-    public String getMessage() {
-        return message;
+    public String getJumlahPembelian() {
+        return jumlahPembelian;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setJumlahPembelian(String jumlahPembelian) {
+        this.jumlahPembelian = jumlahPembelian;
     }
 
 
@@ -142,15 +142,13 @@ public class Customer implements Parcelable {
         whatsapp = in.readString();
         instagram = in.readString();
         facebook = in.readString();
-        message = in.readString();
+        jumlahPembelian = in.readString();
     }
 
     @Override
     public int describeContents() {
         return 0;
     }
-
-
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -164,7 +162,7 @@ public class Customer implements Parcelable {
         dest.writeString(whatsapp);
         dest.writeString(instagram);
         dest.writeString(facebook);
-        dest.writeString(message);
+        dest.writeString(jumlahPembelian);
     }
 
     @SuppressWarnings("unused")

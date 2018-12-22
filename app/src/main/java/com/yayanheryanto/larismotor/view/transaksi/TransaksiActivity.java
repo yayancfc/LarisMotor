@@ -150,19 +150,6 @@ public class TransaksiActivity extends AppCompatActivity {
                     checklist.setVisibility(GONE);
                     kondisi = 1;
 
-//                    if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
-//
-//                        subsidi.setVisibility(View.VISIBLE);
-//                        pencairanLeasing.setVisibility(GONE);
-//
-//                    } else {
-//
-//                        subsidi.setVisibility(View.GONE);
-//                        pencairanLeasing.setVisibility(GONE);
-//
-//
-//                    }
-
 
                 } else {
                     nomorMesin.setVisibility(View.VISIBLE);
@@ -185,18 +172,6 @@ public class TransaksiActivity extends AppCompatActivity {
                     spinnerCaraBayar.setVisibility(View.VISIBLE);
                     kondisi = 0;
 
-//                    if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
-//
-//                        subsidi.setVisibility(View.GONE);
-//                        pencairanLeasing.setVisibility(View.VISIBLE);
-//
-//                    } else {
-//
-//                        subsidi.setVisibility(View.GONE);
-//                        pencairanLeasing.setVisibility(GONE);
-//
-//
-//                    }
 
                 }
 
@@ -230,6 +205,10 @@ public class TransaksiActivity extends AppCompatActivity {
                     dp.setVisibility(GONE);
                     tenor.setVisibility(GONE);
                     cicilan.setVisibility(GONE);
+                    subsidi.setVisibility(GONE);
+                    pencairanLeasing.setVisibility(GONE);
+
+
                 } else {
 
                     harga.setVisibility(GONE);
@@ -242,15 +221,14 @@ public class TransaksiActivity extends AppCompatActivity {
                     cicilan.setEnabled(true);
 
                     if (spinnerMobar.getSelectedItemPosition() == 1) {
-
                         subsidi.setVisibility(View.VISIBLE);
                     } else {
-
                         pencairanLeasing.setVisibility(View.VISIBLE);
                     }
 
-
                 }
+
+
             }
 
             @Override
@@ -276,7 +254,7 @@ public class TransaksiActivity extends AppCompatActivity {
                         if (response.body().isEmpty()) {
 
                             dialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Data motor tidak ditemukan", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Data motor tidak tersedia", Toast.LENGTH_SHORT).show();
                             clearAll();
 
 
@@ -288,24 +266,36 @@ public class TransaksiActivity extends AppCompatActivity {
                             nomorRangka.setEnabled(false);
                             nomorRangka.setTextColor(Color.BLACK);
 
-                            nomorPolisi.setText("No. Polisi : " + motor.getNoPolisi());
+                            nomorPolisi.setText("No. Polisi     : " + motor.getNoPolisi());
                             nomorPolisi.setEnabled(false);
                             nomorPolisi.setTextColor(Color.BLACK);
 
 
-                            dp.setText("DP : Rp. " + motor.getDp());
-                            dp.setEnabled(false);
-                            dp.setTextColor(Color.BLACK);
+                            if (motor.getDp() == null) {
+                                dp.setText("");
+                            } else {
+                                dp.setText("DP       : Rp. " + motor.getDp());
+                                dp.setEnabled(false);
+                                dp.setTextColor(Color.BLACK);
+                            }
 
 
-                            tenor.setText("Tenor : " + motor.getTenor() + " Bulan");
-                            tenor.setEnabled(false);
-                            tenor.setTextColor(Color.BLACK);
+                            if (motor.getTenor() == null) {
+                                tenor.setText("");
+                            } else {
+                                tenor.setText("Tenor (Bulan) : " + motor.getTenor());
+                                tenor.setEnabled(false);
+                                tenor.setTextColor(Color.BLACK);
+                            }
 
 
-                            cicilan.setText("Cicilan : Rp. " + motor.getCicilan());
-                            cicilan.setEnabled(false);
-                            cicilan.setTextColor(Color.BLACK);
+                            if (motor.getCicilan() == null) {
+                                cicilan.setText("");
+                            } else {
+                                cicilan.setText("Cicilan : Rp. " + motor.getCicilan());
+                                cicilan.setEnabled(false);
+                                cicilan.setTextColor(Color.BLACK);
+                            }
 
                             Call<List<MerkTipe>> call2 = apiInterface.getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
                             call2.enqueue(new Callback<List<MerkTipe>>() {
@@ -328,10 +318,15 @@ public class TransaksiActivity extends AppCompatActivity {
                             tahun.setEnabled(false);
                             tahun.setTextColor(Color.BLACK);
 
-                            hargaJualMinimum.setText("Rp. " + motor.getHjm());
-                            hargaJualMinimum.setEnabled(false);
-                            hargaJualMinimum.setTextColor(Color.BLACK);
-
+                            if (motor.getHjm() == null) {
+                                hargaJualMinimum.setText("HJM : - ");
+                                hargaJualMinimum.setEnabled(false);
+                                hargaJualMinimum.setTextColor(Color.BLACK);
+                            } else {
+                                hargaJualMinimum.setText("HJM    : Rp." + motor.getHjm());
+                                hargaJualMinimum.setEnabled(false);
+                                hargaJualMinimum.setTextColor(Color.BLACK);
+                            }
                         }
 
 
@@ -365,10 +360,23 @@ public class TransaksiActivity extends AppCompatActivity {
 
         if (kondisi == 0) {
             noMesin = nomorMesin.getText().toString();
-            hargaTerjual = harga.getText().toString();
+
+            if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
+                hargaTerjual = harga.getText().toString();
+                motor.setHargaTerjual(Integer.valueOf(hargaTerjual));
+            } else {
+                dpMotor = dp.getText().toString();
+                cicilanMotor = cicilan.getText().toString();
+                tenorMotor = tenor.getText().toString();
+
+                motor.setDp(Integer.valueOf(dpMotor.substring(15)));
+                motor.setCicilan(Integer.valueOf(cicilanMotor.substring(15)));
+                motor.setTenor(Integer.valueOf(tenorMotor.substring(16)));
+            }
+
             motor.setNoMesin(noMesin);
             motor.setKondisi(kondisi);
-            motor.setHargaTerjual(Integer.valueOf(hargaTerjual));
+
             Intent intent = new Intent(TransaksiActivity.this, IsiDataActivity.class);
             intent.putExtra(DATA_MOTOR, motor);
             startActivity(intent);
@@ -378,11 +386,6 @@ public class TransaksiActivity extends AppCompatActivity {
             noRangka = nomorRangka.getText().toString();
             tahunMotor = tahun.getText().toString();
             hjm = hargaJualMinimum.getText().toString();
-            dpMotor = dp.getText().toString();
-            cicilanMotor = cicilan.getText().toString();
-            tenorMotor = tenor.getText().toString();
-            hargaTerjual = harga.getText().toString();
-
 
             motor.setNoMesin(noMesin);
             motor.setNoRangka(noRangka);
@@ -391,13 +394,21 @@ public class TransaksiActivity extends AppCompatActivity {
             motor.setKondisi(kondisi);
             motor.setIdTipe(idTipe);
             motor.setIdMerk(idMerk);
-            if (spinnerCaraBayar.getSelectedItemPosition() == 0) {
+
+            if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
+                hargaTerjual = harga.getText().toString();
                 motor.setHargaTerjual(Integer.valueOf(hargaTerjual));
             } else {
+
+                dpMotor = dp.getText().toString();
+                cicilanMotor = cicilan.getText().toString();
+                tenorMotor = tenor.getText().toString();
+
                 motor.setDp(Integer.valueOf(dpMotor));
                 motor.setCicilan(Integer.valueOf(cicilanMotor));
                 motor.setTenor(Integer.valueOf(tenorMotor));
             }
+
             Intent intent = new Intent(TransaksiActivity.this, IsiDataActivity.class);
             intent.putExtra(DATA_MOTOR, motor);
             startActivity(intent);
@@ -413,6 +424,11 @@ public class TransaksiActivity extends AppCompatActivity {
         spinnerTipe.setSelection(0);
         tahun.setText("");
         hargaJualMinimum.setText("");
+        dp.setText("");
+        tenor.setText("");
+        cicilan.setText("");
+        subsidi.setText("");
+        pencairanLeasing.setText("");
     }
 
     private void getMerk() {

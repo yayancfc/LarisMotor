@@ -1,9 +1,10 @@
 package com.yayanheryanto.larismotor.view.owner;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,7 +19,8 @@ import static com.yayanheryanto.larismotor.config.config.DATA_CUSTOMER;
 
 public class DetailCustomerActivity extends AppCompatActivity {
 
-    private TextView noKTP, nama, alamat, ttl, noHp, pekerjaan, agama, whatsapp, instagram, facebook;
+    private TextView noKTP, nama, alamat, ttl, noHp, pekerjaan,
+            agama, whatsapp, instagram, facebook, jumlahPembelian;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class DetailCustomerActivity extends AppCompatActivity {
         whatsapp = findViewById(R.id.whatsapp);
         instagram = findViewById(R.id.instagram);
         facebook = findViewById(R.id.facebook);
-
+        jumlahPembelian = findViewById(R.id.jumlah_pembelian);
 
         fillDetail();
     }
@@ -45,7 +47,6 @@ public class DetailCustomerActivity extends AppCompatActivity {
 
         Bundle data = getIntent().getExtras();
         Customer customer = data.getParcelable(DATA_CUSTOMER);
-        String coba = data.getString("coba");
 
 
         noKTP.setText(customer.getNoKtp());
@@ -63,9 +64,18 @@ public class DetailCustomerActivity extends AppCompatActivity {
         noHp.setText(customer.getNoTelp());
         pekerjaan.setText(customer.getPekerjaan());
         agama.setText(customer.getAgama());
+
         whatsapp.setText(customer.getWhatsapp());
+        whatsapp.setTextColor(Color.parseColor("#0645AD"));
+
         instagram.setText(customer.getInstagram());
+        instagram.setTextColor(Color.parseColor("#0645AD"));
+
         facebook.setText(customer.getFacebook());
+        facebook.setTextColor(Color.parseColor("#0645AD"));
+
+
+        jumlahPembelian.setText(customer.getJumlahPembelian());
 
         final String fb = "http://facebook.com/" + facebook.getText().toString();
         final String ig = "http://instagram.com/" + instagram.getText().toString();

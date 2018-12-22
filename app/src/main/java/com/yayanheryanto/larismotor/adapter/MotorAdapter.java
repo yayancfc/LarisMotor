@@ -77,8 +77,9 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
         initProgressDialog();
         final Motor motor = mList.get(i);
         Picasso.get()
-                .load(BASE_URL + "storage/motor/" + motor.getGambar())
+                .load(BASE_URL + "storage/motor/" + motor.getGambar()).error(R.drawable.mobar)
                 .into(motorViewHolder.imageMotor);
+
         motorViewHolder.textHjm.setText("" + motor.getHarga());
         motorViewHolder.textNopol.setText(motor.getNoPolisi());
 

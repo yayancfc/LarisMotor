@@ -340,6 +340,9 @@ public interface ApiInterface {
                                        @Query("kondisi") String kondisi,
                                        @Query("caraBayar") String caraBayar);
 
+    @POST("api/getNamaCustomerAndNoTelp")
+    Call<List<Customer>> getNamaCustomerAndNoTelp(@Query("no_mesin") String no_mesin) ;
+
     @FormUrlEncoded
     @POST("api/searchCustomer")
     Call<List<Customer>> searchCustomer(@Field("nama") String nama);

@@ -2,28 +2,27 @@ package com.yayanheryanto.larismotor.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Detail implements Parcelable
-{
+public class Detail implements Parcelable {
 
     @SerializedName("no_mesin")
     @Expose
     private String noMesin;
     @SerializedName("harga")
     @Expose
-    private Integer harga;
+    private String harga;
     @SerializedName("dp")
     @Expose
-    private Integer dp;
+    private String dp;
     @SerializedName("cicilan")
     @Expose
-    private Integer cicilan;
+    private String cicilan;
     @SerializedName("tenor")
     @Expose
-    private Integer tenor;
+    private String tenor;
     @SerializedName("no_polisi")
     @Expose
     private String noPolisi;
@@ -32,16 +31,19 @@ public class Detail implements Parcelable
     private String noRangka;
     @SerializedName("hjm")
     @Expose
-    private Integer hjm;
+    private String hjm;
     @SerializedName("kondisi")
     @Expose
-    private Integer kondisi;
+    private String kondisi;
     @SerializedName("tahun")
     @Expose
-    private Integer tahun;
+    private String tahun;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private String status;
+    @SerializedName("harga_terjual")
+    @Expose
+    private String hargaTerjual;
     @SerializedName("gambar")
     @Expose
     private String gambar;
@@ -60,45 +62,6 @@ public class Detail implements Parcelable
     @SerializedName("no_wa")
     @Expose
     private String noWa;
-    public final static Parcelable.Creator<Detail> CREATOR = new Creator<Detail>() {
-
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Detail createFromParcel(Parcel in) {
-            return new Detail(in);
-        }
-
-        public Detail[] newArray(int size) {
-            return (new Detail[size]);
-        }
-
-    }
-            ;
-
-    protected Detail(Parcel in) {
-        this.noMesin = ((String) in.readValue((String.class.getClassLoader())));
-        this.harga = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.dp = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.cicilan = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.tenor = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.noPolisi = ((String) in.readValue((String.class.getClassLoader())));
-        this.noRangka = ((String) in.readValue((String.class.getClassLoader())));
-        this.hjm = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.kondisi = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.tahun = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.status = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.gambar = ((String) in.readValue((String.class.getClassLoader())));
-        this.gambar1 = ((String) in.readValue((String.class.getClassLoader())));
-        this.gambar2 = ((String) in.readValue((String.class.getClassLoader())));
-        this.namaMerk = ((String) in.readValue((String.class.getClassLoader())));
-        this.namaTipe = ((String) in.readValue((String.class.getClassLoader())));
-        this.noWa = ((String) in.readValue((String.class.getClassLoader())));
-    }
-
-    public Detail() {
-    }
 
     public String getNoMesin() {
         return noMesin;
@@ -108,35 +71,35 @@ public class Detail implements Parcelable
         this.noMesin = noMesin;
     }
 
-    public Integer getHarga() {
+    public String getHarga() {
         return harga;
     }
 
-    public void setHarga(Integer harga) {
+    public void setHarga(String harga) {
         this.harga = harga;
     }
 
-    public Integer getDp() {
+    public String getDp() {
         return dp;
     }
 
-    public void setDp(Integer dp) {
+    public void setDp(String dp) {
         this.dp = dp;
     }
 
-    public Integer getCicilan() {
+    public String getCicilan() {
         return cicilan;
     }
 
-    public void setCicilan(Integer cicilan) {
+    public void setCicilan(String cicilan) {
         this.cicilan = cicilan;
     }
 
-    public Integer getTenor() {
+    public String getTenor() {
         return tenor;
     }
 
-    public void setTenor(Integer tenor) {
+    public void setTenor(String tenor) {
         this.tenor = tenor;
     }
 
@@ -156,36 +119,44 @@ public class Detail implements Parcelable
         this.noRangka = noRangka;
     }
 
-    public Integer getHjm() {
+    public String getHjm() {
         return hjm;
     }
 
-    public void setHjm(Integer hjm) {
+    public void setHjm(String hjm) {
         this.hjm = hjm;
     }
 
-    public Integer getKondisi() {
+    public String getKondisi() {
         return kondisi;
     }
 
-    public void setKondisi(Integer kondisi) {
+    public void setKondisi(String kondisi) {
         this.kondisi = kondisi;
     }
 
-    public Integer getTahun() {
+    public String getTahun() {
         return tahun;
     }
 
-    public void setTahun(Integer tahun) {
+    public void setTahun(String tahun) {
         this.tahun = tahun;
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getHargaTerjual() {
+        return hargaTerjual;
+    }
+
+    public void setHargaTerjual(String hargaTerjual) {
+        this.hargaTerjual = hargaTerjual;
     }
 
     public String getGambar() {
@@ -236,28 +207,65 @@ public class Detail implements Parcelable
         this.noWa = noWa;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(noMesin);
-        dest.writeValue(harga);
-        dest.writeValue(dp);
-        dest.writeValue(cicilan);
-        dest.writeValue(tenor);
-        dest.writeValue(noPolisi);
-        dest.writeValue(noRangka);
-        dest.writeValue(hjm);
-        dest.writeValue(kondisi);
-        dest.writeValue(tahun);
-        dest.writeValue(status);
-        dest.writeValue(gambar);
-        dest.writeValue(gambar1);
-        dest.writeValue(gambar2);
-        dest.writeValue(namaMerk);
-        dest.writeValue(namaTipe);
-        dest.writeValue(noWa);
+
+    protected Detail(Parcel in) {
+        noMesin = in.readString();
+        harga = in.readString();
+        dp = in.readString();
+        cicilan = in.readString();
+        tenor = in.readString();
+        noPolisi = in.readString();
+        noRangka = in.readString();
+        hjm = in.readString();
+        kondisi = in.readString();
+        tahun = in.readString();
+        status = in.readString();
+        hargaTerjual = in.readString();
+        gambar = in.readString();
+        gambar1 = in.readString();
+        gambar2 = in.readString();
+        namaMerk = in.readString();
+        namaTipe = in.readString();
+        noWa = in.readString();
     }
 
+    @Override
     public int describeContents() {
         return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(noMesin);
+        dest.writeString(harga);
+        dest.writeString(dp);
+        dest.writeString(cicilan);
+        dest.writeString(tenor);
+        dest.writeString(noPolisi);
+        dest.writeString(noRangka);
+        dest.writeString(hjm);
+        dest.writeString(kondisi);
+        dest.writeString(tahun);
+        dest.writeString(status);
+        dest.writeString(hargaTerjual);
+        dest.writeString(gambar);
+        dest.writeString(gambar1);
+        dest.writeString(gambar2);
+        dest.writeString(namaMerk);
+        dest.writeString(namaTipe);
+        dest.writeString(noWa);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Detail> CREATOR = new Parcelable.Creator<Detail>() {
+        @Override
+        public Detail createFromParcel(Parcel in) {
+            return new Detail(in);
+        }
+
+        @Override
+        public Detail[] newArray(int size) {
+            return new Detail[size];
+        }
+    };
 }

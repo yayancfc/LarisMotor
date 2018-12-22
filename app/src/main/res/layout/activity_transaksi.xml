@@ -158,7 +158,7 @@
                 android:id="@+id/tenor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tenor"
+                android:hint="Tenor (Bulan)"
                 android:visibility="gone" />
 
             <EditText
