@@ -30,9 +30,10 @@ public class DetailMotorActivity extends AppCompatActivity {
 
     private Slider slider;
     private TextView noMesin, noPolisi, noRangka, merk, tipe, tahun, hjm, status,
-            kondisi, harga, dp, cicilan, tenor, hargaTerjual, pembeli, telpPembeli;
+            kondisi, harga, dp, cicilan, tenor, nilaiSubsidi,
+            hargaTerjual, pembeli, telpPembeli, labelSubsidi;
     private ProgressDialog dialog;
-    LinearLayout terjual, nopol;
+    LinearLayout terjual, nopol, tersubsidi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,9 @@ public class DetailMotorActivity extends AppCompatActivity {
         telpPembeli = findViewById(R.id.no_telp_pembeli);
         terjual = findViewById(R.id.terjual);
         nopol = findViewById(R.id.nopol);
+        nilaiSubsidi = findViewById(R.id.subsidi);
+        tersubsidi = findViewById(R.id.tersubsidi);
+        labelSubsidi = findViewById(R.id.label_subsidi);
 
         initProgressDialog();
 
@@ -95,7 +99,7 @@ public class DetailMotorActivity extends AppCompatActivity {
                 tahun.setText("" + motor.getTahun());
 
                 if (motor.getHjm() == null) {
-                    hjm.setText("");
+                    hjm.setText("-");
                 } else {
                     hjm.setText("Rp. " + motor.getHjm());
                 }
@@ -111,23 +115,24 @@ public class DetailMotorActivity extends AppCompatActivity {
                 if (motor.getCicilan() == null) {
                     cicilan.setText("-");
                 } else {
-                    cicilan.setText("Rp. " + motor.getDp());
+                    cicilan.setText("Rp. " + motor.getCicilan());
                 }
 
                 if (motor.getTenor() == null) {
                     tenor.setText("-");
                 } else {
-                    tenor.setText("Rp. " + motor.getDp());
+                    tenor.setText(motor.getTenor() + " Bulan");
                 }
 
 
                 if (motor.getStatus().equals("0")) {
                     status.setText("Tersedia");
                     terjual.setVisibility(GONE);
+                    tersubsidi.setVisibility(GONE);
                 } else {
                     status.setText("Sold Out");
                     terjual.setVisibility(View.VISIBLE);
-                    hargaTerjual.setText(motor.getHargaTerjual());
+                    hargaTerjual.setText("Rp. " + motor.getHargaTerjual());
 
                     final ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
                     Call<List<Customer>> calling = apiInterface.getNamaCustomerAndNoTelp(motor.getNoMesin());
@@ -159,8 +164,23 @@ public class DetailMotorActivity extends AppCompatActivity {
                     kondisi.setText("Baru");
                     slider.setVisibility(GONE);
                     nopol.setVisibility(GONE);
+
+                    if (motor.getSubsidi() == null) {
+                        nilaiSubsidi.setText("-");
+                    } else {
+                        nilaiSubsidi.setText("Rp. " + motor.getSubsidi());
+                    }
+
                 } else {
                     kondisi.setText("Bekas");
+
+                    labelSubsidi.setText("Pencairan Leasing");
+
+                    if (motor.getPencairanLeasing() == null) {
+                        nilaiSubsidi.setText("-");
+                    } else {
+                        nilaiSubsidi.setText("Rp. " + motor.getPencairanLeasing());
+                    }
                     slider.setAdapter(new MainSliderAdapter(motor.getGambar(), motor.getGambar1(), motor.getGambar2()));
                 }
 

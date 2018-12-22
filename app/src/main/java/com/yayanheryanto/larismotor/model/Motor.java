@@ -1,13 +1,14 @@
 package com.yayanheryanto.larismotor.model;
 
+
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Motor implements Parcelable
-{
+public class Motor implements Parcelable {
+
     @SerializedName("message")
     @Expose
     private String message;
@@ -29,9 +30,6 @@ public class Motor implements Parcelable
     @SerializedName("id_tipe")
     @Expose
     private Integer idTipe;
-    @SerializedName("id_transaksi")
-    @Expose
-    private Integer idTransaksi;
     @SerializedName("id_user")
     @Expose
     private Integer idUser;
@@ -77,44 +75,12 @@ public class Motor implements Parcelable
     @SerializedName("dp")
     @Expose
     private Integer dp;
-    public final static Parcelable.Creator<Motor> CREATOR = new Creator<Motor>() {
-
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Motor createFromParcel(Parcel in) {
-            return new Motor(in);
-        }
-
-        public Motor[] newArray(int size) {
-            return (new Motor[size]);
-        }
-
-    }
-            ;
-
-    protected Motor(Parcel in) {
-        this.noMesin = ((String) in.readValue((String.class.getClassLoader())));
-        this.idMerk = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.idTipe = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.idTransaksi = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.idUser = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.noPolisi = ((String) in.readValue((String.class.getClassLoader())));
-        this.noRangka = ((String) in.readValue((String.class.getClassLoader())));
-        this.tahun = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.status = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.kondisi = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.harga = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.hjm = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.hargaTerjual = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.gambar = ((String) in.readValue((String.class.getClassLoader())));
-        this.gambar1 = ((String) in.readValue((String.class.getClassLoader())));
-        this.gambar2 = ((String) in.readValue((String.class.getClassLoader())));
-        this.cicilan = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.tenor = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.dp = ((Integer) in.readValue((Integer.class.getClassLoader())));
-    }
+    @SerializedName("subsidi")
+    @Expose
+    private Integer subsidi;
+    @SerializedName("pencairan_leasing")
+    @Expose
+    private Integer pencairanLeasing;
 
     public Motor() {
     }
@@ -141,14 +107,6 @@ public class Motor implements Parcelable
 
     public void setIdTipe(Integer idTipe) {
         this.idTipe = idTipe;
-    }
-
-    public Integer getIdTransaksi() {
-        return idTransaksi;
-    }
-
-    public void setIdTransaksi(Integer idTransaksi) {
-        this.idTransaksi = idTransaksi;
     }
 
     public Integer getIdUser() {
@@ -271,30 +229,155 @@ public class Motor implements Parcelable
         this.dp = dp;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(noMesin);
-        dest.writeValue(idMerk);
-        dest.writeValue(idTipe);
-        dest.writeValue(idTransaksi);
-        dest.writeValue(idUser);
-        dest.writeValue(noPolisi);
-        dest.writeValue(noRangka);
-        dest.writeValue(tahun);
-        dest.writeValue(status);
-        dest.writeValue(kondisi);
-        dest.writeValue(harga);
-        dest.writeValue(hjm);
-        dest.writeValue(hargaTerjual);
-        dest.writeValue(gambar);
-        dest.writeValue(gambar1);
-        dest.writeValue(gambar2);
-        dest.writeValue(cicilan);
-        dest.writeValue(tenor);
-        dest.writeValue(dp);
+    public Integer getSubsidi() {
+        return subsidi;
     }
 
+    public void setSubsidi(Integer subsidi) {
+        this.subsidi = subsidi;
+    }
+
+    public Integer getPencairanLeasing() {
+        return pencairanLeasing;
+    }
+
+    public void setPencairanLeasing(Integer pencairanLeasing) {
+        this.pencairanLeasing = pencairanLeasing;
+    }
+
+
+    protected Motor(Parcel in) {
+        noMesin = in.readString();
+        idMerk = in.readByte() == 0x00 ? null : in.readInt();
+        idTipe = in.readByte() == 0x00 ? null : in.readInt();
+        idUser = in.readByte() == 0x00 ? null : in.readInt();
+        noPolisi = in.readString();
+        noRangka = in.readString();
+        tahun = in.readByte() == 0x00 ? null : in.readInt();
+        status = in.readByte() == 0x00 ? null : in.readInt();
+        kondisi = in.readByte() == 0x00 ? null : in.readInt();
+        harga = in.readByte() == 0x00 ? null : in.readInt();
+        hjm = in.readByte() == 0x00 ? null : in.readInt();
+        hargaTerjual = in.readByte() == 0x00 ? null : in.readInt();
+        gambar = in.readString();
+        gambar1 = in.readString();
+        gambar2 = in.readString();
+        cicilan = in.readByte() == 0x00 ? null : in.readInt();
+        tenor = in.readByte() == 0x00 ? null : in.readInt();
+        dp = in.readByte() == 0x00 ? null : in.readInt();
+        subsidi = in.readByte() == 0x00 ? null : in.readInt();
+        pencairanLeasing = in.readByte() == 0x00 ? null : in.readInt();
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(noMesin);
+        if (idMerk == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(idMerk);
+        }
+        if (idTipe == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(idTipe);
+        }
+        if (idUser == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(idUser);
+        }
+        dest.writeString(noPolisi);
+        dest.writeString(noRangka);
+        if (tahun == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(tahun);
+        }
+        if (status == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(status);
+        }
+        if (kondisi == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(kondisi);
+        }
+        if (harga == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(harga);
+        }
+        if (hjm == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(hjm);
+        }
+        if (hargaTerjual == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(hargaTerjual);
+        }
+        dest.writeString(gambar);
+        dest.writeString(gambar1);
+        dest.writeString(gambar2);
+        if (cicilan == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(cicilan);
+        }
+        if (tenor == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(tenor);
+        }
+        if (dp == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(dp);
+        }
+        if (subsidi == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(subsidi);
+        }
+        if (pencairanLeasing == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(pencairanLeasing);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Motor> CREATOR = new Parcelable.Creator<Motor>() {
+        @Override
+        public Motor createFromParcel(Parcel in) {
+            return new Motor(in);
+        }
+
+        @Override
+        public Motor[] newArray(int size) {
+            return new Motor[size];
+        }
+    };
 }

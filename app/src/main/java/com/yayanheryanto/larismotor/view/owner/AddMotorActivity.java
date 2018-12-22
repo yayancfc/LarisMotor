@@ -276,21 +276,6 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
         for (int i = 0; i < images.size(); i++) {
             File file = new File(images.get(i).path);
-            try {
-
-                new Compressor(this)
-                        .setMaxWidth(640)
-                        .setMaxHeight(480)
-                        .setQuality(75)
-                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
-                        .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_PICTURES).getAbsolutePath())
-                        .compressToFile(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
             builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
             Log.d(DEBUG, file.getName());
         }

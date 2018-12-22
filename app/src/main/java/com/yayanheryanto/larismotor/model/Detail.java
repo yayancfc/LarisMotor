@@ -62,6 +62,12 @@ public class Detail implements Parcelable {
     @SerializedName("no_wa")
     @Expose
     private String noWa;
+    @SerializedName("subsidi")
+    @Expose
+    private String subsidi;
+    @SerializedName("pencairan_leasing")
+    @Expose
+    private String pencairanLeasing;
 
     public String getNoMesin() {
         return noMesin;
@@ -207,6 +213,22 @@ public class Detail implements Parcelable {
         this.noWa = noWa;
     }
 
+    public String getSubsidi() {
+        return subsidi;
+    }
+
+    public void setSubsidi(String subsidi) {
+        this.subsidi = subsidi;
+    }
+
+    public String getPencairanLeasing() {
+        return pencairanLeasing;
+    }
+
+    public void setPencairanLeasing(String pencairanLeasing) {
+        this.pencairanLeasing = pencairanLeasing;
+    }
+
 
     protected Detail(Parcel in) {
         noMesin = in.readString();
@@ -227,6 +249,8 @@ public class Detail implements Parcelable {
         namaMerk = in.readString();
         namaTipe = in.readString();
         noWa = in.readString();
+        subsidi = in.readString();
+        pencairanLeasing = in.readString();
     }
 
     @Override
@@ -254,6 +278,8 @@ public class Detail implements Parcelable {
         dest.writeString(namaMerk);
         dest.writeString(namaTipe);
         dest.writeString(noWa);
+        dest.writeString(subsidi);
+        dest.writeString(pencairanLeasing);
     }
 
     @SuppressWarnings("unused")
@@ -269,3 +295,4 @@ public class Detail implements Parcelable {
         }
     };
 }
+

@@ -62,7 +62,7 @@ public class TransaksiActivity extends AppCompatActivity {
     private String statusMotor;
     private int idTipe, idMerk;
     private List<Tipe> tipes;
-
+    private boolean flagDp, flagCicilan, flagTenor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,28 +273,34 @@ public class TransaksiActivity extends AppCompatActivity {
 
                             if (motor.getDp() == null) {
                                 dp.setText("");
+                                flagDp = false;
                             } else {
                                 dp.setText("DP       : Rp. " + motor.getDp());
                                 dp.setEnabled(false);
                                 dp.setTextColor(Color.BLACK);
+                                flagDp = true;
                             }
 
 
                             if (motor.getTenor() == null) {
                                 tenor.setText("");
+                                flagTenor = false;
                             } else {
                                 tenor.setText("Tenor (Bulan) : " + motor.getTenor());
                                 tenor.setEnabled(false);
                                 tenor.setTextColor(Color.BLACK);
+                                flagTenor = true;
                             }
 
 
                             if (motor.getCicilan() == null) {
                                 cicilan.setText("");
+                                flagCicilan = false;
                             } else {
                                 cicilan.setText("Cicilan : Rp. " + motor.getCicilan());
                                 cicilan.setEnabled(false);
                                 cicilan.setTextColor(Color.BLACK);
+                                flagTenor = true;
                             }
 
                             Call<List<MerkTipe>> call2 = apiInterface.getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
@@ -356,7 +362,8 @@ public class TransaksiActivity extends AppCompatActivity {
     private void getData() {
 
         Motor motor = new Motor();
-        String noMesin, noRangka, tahunMotor, hjm, dpMotor, cicilanMotor, tenorMotor, hargaTerjual;
+        String noMesin, noRangka, tahunMotor, hjm, dpMotor, cicilanMotor,
+                tenorMotor, hargaTerjual, subsidiMotor, pencairanLeasingMotor;
 
         if (kondisi == 0) {
             noMesin = nomorMesin.getText().toString();
@@ -368,10 +375,28 @@ public class TransaksiActivity extends AppCompatActivity {
                 dpMotor = dp.getText().toString();
                 cicilanMotor = cicilan.getText().toString();
                 tenorMotor = tenor.getText().toString();
+                pencairanLeasingMotor = pencairanLeasing.getText().toString();
 
-                motor.setDp(Integer.valueOf(dpMotor.substring(15)));
-                motor.setCicilan(Integer.valueOf(cicilanMotor.substring(15)));
-                motor.setTenor(Integer.valueOf(tenorMotor.substring(16)));
+                if (flagDp) {
+                    motor.setDp(Integer.valueOf(dpMotor.substring(15)));
+                } else {
+                    motor.setDp(Integer.valueOf(dpMotor));
+
+                }
+
+                if (flagCicilan) {
+                    motor.setCicilan(Integer.valueOf(cicilanMotor.substring(15)));
+                } else {
+                    motor.setCicilan(Integer.valueOf(cicilanMotor));
+                }
+
+                if (flagTenor) {
+                    motor.setTenor(Integer.valueOf(tenorMotor.substring(16)));
+                } else {
+                    motor.setTenor(Integer.valueOf(tenorMotor));
+                }
+
+                motor.setPencairanLeasing(Integer.valueOf(pencairanLeasingMotor));
             }
 
             motor.setNoMesin(noMesin);
@@ -403,10 +428,13 @@ public class TransaksiActivity extends AppCompatActivity {
                 dpMotor = dp.getText().toString();
                 cicilanMotor = cicilan.getText().toString();
                 tenorMotor = tenor.getText().toString();
+                subsidiMotor = subsidi.getText().toString();
+
 
                 motor.setDp(Integer.valueOf(dpMotor));
                 motor.setCicilan(Integer.valueOf(cicilanMotor));
                 motor.setTenor(Integer.valueOf(tenorMotor));
+                motor.setSubsidi(Integer.valueOf(subsidiMotor));
             }
 
             Intent intent = new Intent(TransaksiActivity.this, IsiDataActivity.class);

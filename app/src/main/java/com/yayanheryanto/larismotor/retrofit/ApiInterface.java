@@ -268,7 +268,11 @@ public interface ApiInterface {
                                 @Field("no_mesin") String no_mesin,
                                 @Field("no_ktp") String no_ktp,
                                 @Field("no_ktp_sales") String no_ktp_sales,
-                                @Field("harga_terjual") String harga_terjual);
+                                @Field("harga_terjual") String harga_terjual,
+                                @Field("dp") String dp,
+                                @Field("cicilan") String cicilan,
+                                @Field("tenor") String tenor,
+                                @Field("pencairanLeasing") String pencairanLeasing);
 
 
     @FormUrlEncoded
@@ -286,6 +290,10 @@ public interface ApiInterface {
                               @Field("instagram") String instagram,
                               @Field("facebook") String facebook,
                               @Field("harga_terjual") String harga_terjual,
+                              @Field("dp") String dp,
+                              @Field("cicilan") String cicilan,
+                              @Field("tenor") String tenor,
+                              @Field("pencairanLeasing") String pencairanLeasing,
                               @Field("no_ktp_sales") String no_ktp_sales);
 
 
@@ -304,7 +312,8 @@ public interface ApiInterface {
                                 @Field("harga_terjual") String harga_terjual,
                                 @Field("dp") String dp,
                                 @Field("cicilan") String cicilan,
-                                @Field("tenor") String tenor);
+                                @Field("tenor") String tenor,
+                                @Field("subsidi") String subsidi);
 
 
     @FormUrlEncoded
@@ -321,6 +330,7 @@ public interface ApiInterface {
                               @Field("dp") String dp,
                               @Field("cicilan") String cicilan,
                               @Field("tenor") String tenor,
+                              @Field("subsidi") String subsidi,
                               @Field("no_ktp") String no_ktp,
                               @Field("nama") String nama,
                               @Field("alamat") String alamat,
@@ -345,9 +355,9 @@ public interface ApiInterface {
 
     @POST("api/getFilteredMotor")
     Call<List<Motor>> getFilteredMotor(@Query("status") String status,
-                                              @Query("merk") String merk,
-                                              @Query("tipe") String tipe,
-                                              @Query("tahun") String tahun);
+                                       @Query("merk") String merk,
+                                       @Query("tipe") String tipe,
+                                       @Query("tahun") String tahun);
 
     @FormUrlEncoded
     @POST("api/searchCustomer")

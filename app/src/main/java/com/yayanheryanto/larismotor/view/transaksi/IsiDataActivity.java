@@ -139,19 +139,19 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
                             ttl.setEnabled(false);
                             ttl.setTextColor(Color.BLACK);
 
-                            pekerjaan.setText(customer.getAlamat());
+                            pekerjaan.setText(customer.getPekerjaan());
                             pekerjaan.setEnabled(false);
                             pekerjaan.setTextColor(Color.BLACK);
 
-                            whatsapp.setText(customer.getAlamat());
+                            whatsapp.setText(customer.getWhatsapp());
                             whatsapp.setEnabled(false);
                             whatsapp.setTextColor(Color.BLACK);
 
-                            instagram.setText(customer.getNama());
+                            instagram.setText(customer.getInstagram());
                             instagram.setEnabled(false);
                             instagram.setTextColor(Color.BLACK);
 
-                            facebook.setText(customer.getAlamat());
+                            facebook.setText(customer.getFacebook());
                             facebook.setEnabled(false);
                             facebook.setTextColor(Color.BLACK);
 
@@ -252,6 +252,8 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
     private void getFromIntent() {
         Bundle bundle = getIntent().getExtras();
         motor = bundle.getParcelable(DATA_MOTOR);
+
+
     }
 
     private void clearAll() {
@@ -300,7 +302,6 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
         String whatsappTxt = whatsapp.getText().toString();
         String instagramTxt = instagram.getText().toString();
         String facebookTxt = facebook.getText().toString();
-        Log.d("Tanggal", tanggal);
 
 
         //bekas = 0;
@@ -308,44 +309,48 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
         if (motor.getKondisi() == 0 && statusCustomer == 1) {
             //ubah status motor dan simpan ke transaksi, customer++
             Log.v("apa", no_ktp_sales);
-            call = apiInterface.mokasWithNoCust(token, motor.getNoMesin(), nomorKtpTxt, no_ktp_sales, String.valueOf(motor.getHargaTerjual()));
+            call = apiInterface.mokasWithNoCust(token, motor.getNoMesin(), nomorKtpTxt, no_ktp_sales, String.valueOf(motor.getHargaTerjual()),
+                    motor.getDp() + "", motor.getCicilan() + "", motor.getTenor() + "", motor.getPencairanLeasing() + "");
         } else if (motor.getKondisi() == 0 && statusCustomer == 0) {
             //ubah status motor, simpan customer dan transaksi
-            call = apiInterface.mokasWithCust(token, motor.getNoMesin(), nomorKtpTxt, namaTxt, alamatTxt, nomorTelpTxt, tanggal, Agama, pekerjaanTxt, whatsappTxt, instagramTxt, facebookTxt, String.valueOf(motor.getHargaTerjual()), no_ktp_sales);
+            call = apiInterface.mokasWithCust(token, motor.getNoMesin(), nomorKtpTxt, namaTxt, alamatTxt, nomorTelpTxt, tanggal, Agama, pekerjaanTxt, whatsappTxt, instagramTxt, facebookTxt,
+                    String.valueOf(motor.getHargaTerjual()), motor.getDp() + "", motor.getCicilan() + "",
+                    motor.getTenor() + "", motor.getPencairanLeasing() + "", no_ktp_sales);
         } else if (motor.getKondisi() == 1 && statusCustomer == 1) {
             //simpan, simpan ke transaksi, customer++
 
             call = apiInterface.mobarWithNoCust(token, nomorKtpTxt, no_ktp_sales, motor.getNoMesin(), motor.getNoRangka(), String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()),
-                    String.valueOf(motor.getTahun()), String.valueOf(motor.getHjm()), id, String.valueOf(motor.getHargaTerjual()),
-                    String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor())
+                    String.valueOf(motor.getTahun()), String.valueOf(motor.getHjm()), id, motor.getHargaTerjual() + "",
+                    String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()),
+                    motor.getSubsidi() + ""
             );
 
         } else if (motor.getKondisi() == 1 && statusCustomer == 0) {
             call = apiInterface.mobarWithCust(token, motor.getNoMesin(), motor.getNoRangka(), String.valueOf(motor.getTahun()), String.valueOf(motor.getHjm()),
                     String.valueOf(motor.getIdTipe()), String.valueOf(motor.getIdMerk()), id, String.valueOf(motor.getHargaTerjual()),
-                    String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()),
+                    String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()), motor.getSubsidi() + "",
                     nomorKtpTxt, namaTxt, alamatTxt, nomorTelpTxt, Agama, pekerjaanTxt, whatsappTxt, instagramTxt, facebookTxt, no_ktp_sales, tanggal);
         }
-            call.enqueue(new Callback<Motor>() {
-                @Override
-                public void onResponse(Call<Motor> call, Response<Motor> response) {
-                    dialog.dismiss();
+        call.enqueue(new Callback<Motor>() {
+            @Override
+            public void onResponse(Call<Motor> call, Response<Motor> response) {
+                dialog.dismiss();
 
-                    if (response.body().getMessage().equalsIgnoreCase("success")) {
-                        Toast.makeText(IsiDataActivity.this, "Transasksi Berhasil Disimpan", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(IsiDataActivity.this, OwnerMenuActivity.class));
-                    }
+                if (response.body().getMessage().equalsIgnoreCase("success")) {
+                    Toast.makeText(IsiDataActivity.this, "Transasksi Berhasil Disimpan", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(IsiDataActivity.this, OwnerMenuActivity.class));
                 }
+            }
 
-                @Override
-                public void onFailure(Call<Motor> call, Throwable t) {
-                    Log.d("cobaa", t.getMessage());
-                    dialog.dismiss();
-                    Toast.makeText(IsiDataActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
-                }
+            @Override
+            public void onFailure(Call<Motor> call, Throwable t) {
+                Log.d("cobaa", t.getMessage());
+                dialog.dismiss();
+                Toast.makeText(IsiDataActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
 
 
-            });
+        });
 
     }
 
@@ -363,7 +368,6 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
 
         SimpleDateFormat sqlformat = new SimpleDateFormat("yyyyMMdd", new Locale("EN"));
         String tanggal = year + month + dayOfMonth;
-
 
 
         try {
