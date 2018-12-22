@@ -39,29 +39,29 @@ import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 public class TransaksiActivity extends AppCompatActivity {
 
 
-    Spinner spinnerCaraBayar;
-    EditText cicilan;
-    EditText tenor;
-    EditText dp;
-    EditText harga;
-    EditText nomorMesin;
-    EditText nomorRangka;
-    EditText nomorPolisi;
-    EditText subsidi;
-    EditText pencairanLeasing;
-    Spinner spinnerMerk;
-    Spinner spinnerTipe;
-    EditText tahun;
-    EditText hargaJualMinimum;
-    Button checklist;
-    TextView tanggal, merk, tipe, pembayaran;
-    ArrayAdapter<String> merkAdapter;
-    ArrayAdapter<String> tipeAdapter;
-    int kondisi;
+    private Spinner spinnerCaraBayar;
+    private EditText cicilan;
+    private EditText tenor;
+    private EditText dp;
+    private EditText harga;
+    private EditText nomorMesin;
+    private EditText nomorRangka;
+    private EditText nomorPolisi;
+    private EditText subsidi;
+    private EditText pencairanLeasing;
+    private Spinner spinnerMerk;
+    private Spinner spinnerTipe;
+    private EditText tahun;
+    private EditText hargaJualMinimum;
+    private Button checklist;
+    private TextView tanggal, merk, tipe, pembayaran;
+    private ArrayAdapter<String> merkAdapter;
+    private ArrayAdapter<String> tipeAdapter;
+    private int kondisi;
     private ProgressDialog dialog;
-    String statusMotor;
-    int idTipe, idMerk;
-    List<Tipe> tipes;
+    private String statusMotor;
+    private int idTipe, idMerk;
+    private List<Tipe> tipes;
 
 
     @Override

@@ -79,7 +79,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
         initProgressDialog();
         final Motor motor = mList.get(position);
         Picasso.get()
-                .load(BASE_URL + "storage/motor/" + motor.getGambar())
+                .load(BASE_URL + "storage/motor/" + motor.getGambar()).error(R.drawable.mobar)
                 .into(holder.imageMotor);
         holder.textHjm.setText("" + motor.getHarga());
         holder.textNopol.setText(motor.getNoPolisi());

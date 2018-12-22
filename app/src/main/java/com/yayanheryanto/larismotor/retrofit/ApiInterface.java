@@ -341,7 +341,13 @@ public interface ApiInterface {
                                        @Query("caraBayar") String caraBayar);
 
     @POST("api/getNamaCustomerAndNoTelp")
-    Call<List<Customer>> getNamaCustomerAndNoTelp(@Query("no_mesin") String no_mesin) ;
+    Call<List<Customer>> getNamaCustomerAndNoTelp(@Query("no_mesin") String no_mesin);
+
+    @POST("api/getFilteredMotor")
+    Call<List<Motor>> getFilteredMotor(@Query("status") String status,
+                                              @Query("merk") String merk,
+                                              @Query("tipe") String tipe,
+                                              @Query("tahun") String tahun);
 
     @FormUrlEncoded
     @POST("api/searchCustomer")
@@ -359,5 +365,6 @@ public interface ApiInterface {
 
     @GET("api/getFilterSales")
     Call<List<Sales>> getFilterSales(@Header("Authorization") String authorization);
+
 
 }

@@ -11,10 +11,17 @@
         app:showAsAction="always|collapseActionView" />
 
     <item
+        android:id="@+id/filter"
+        android:icon="@drawable/filter"
+        android:title="Filter"
+        app:showAsAction="always" />
+
+
+    <item
         android:id="@+id/tambah"
         android:icon="@drawable/ic_plus"
         android:title="Tambah"
-        app:showAsAction="always">
+        app:showAsAction="always" />
 
-    </item>
+
 </menu>
