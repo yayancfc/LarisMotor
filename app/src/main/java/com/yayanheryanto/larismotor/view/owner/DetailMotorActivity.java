@@ -157,7 +157,7 @@ public class DetailMotorActivity extends AppCompatActivity {
 
                 if (motor.getKondisi().equals("1")) {
                     kondisi.setText("Baru");
-                    slider.setAdapter(new MainSliderAdapter(, motor.getGambar1(), motor.getGambar2()));
+                    slider.setVisibility(GONE);
                     nopol.setVisibility(GONE);
                 } else {
                     kondisi.setText("Bekas");
