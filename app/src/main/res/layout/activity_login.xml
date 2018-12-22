@@ -15,6 +15,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/account_login"
         android:textColor="#FFFFFF"
+        android:visibility="invisible"
         android:textSize="30sp" />
 
 
@@ -22,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="60dp"
         android:elevation="10dp"
         android:src="@drawable/ic_man" />
 
