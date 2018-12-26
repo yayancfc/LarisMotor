@@ -18,13 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.pending.DetailPendingBeliActivity;
-import com.yayanheryanto.larismotor.view.pending.EditPendingBeliActivity;
-import com.yayanheryanto.larismotor.view.LoginActivity;
-import com.yayanheryanto.larismotor.view.pending.PendingTransaksiActivity;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingJual;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.view.pending.DetailPendingJualActivity;
+import com.yayanheryanto.larismotor.view.pending.EditPendingJualActivity;
 
 import java.util.List;
 
@@ -37,62 +36,65 @@ import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
-public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.PendingViewHolder>{
+public class SearchPendingJualAdapter extends RecyclerView.Adapter<SearchPendingJualAdapter.PendingViewHolder>{
 
 
     private Context mContext;
-    private List<Pending> mList;
+    private List<PendingJual> mList;
     private FragmentManager parentActivity;
-    private PendingBeliAdapter adapter;
+    private SearchPendingJualAdapter adapter;
     private ProgressDialog progressDialog = null;
 
-    public PendingBeliAdapter(Context mContext, List<Pending> mList, FragmentManager parentActivity) {
+
+    public SearchPendingJualAdapter(Context mContext, List<PendingJual> mList) {
         this.mContext = mContext;
         this.mList = mList;
-        this.parentActivity = parentActivity;
         this.adapter = this;
     }
+
 
     @Override
     public PendingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.pending_beli, null, false);
-        PendingBeliAdapter.PendingViewHolder adapter = new PendingBeliAdapter.PendingViewHolder(view);
+        View view = inflater.inflate(R.layout.pending_jual, null, false);
+        SearchPendingJualAdapter.PendingViewHolder adapter = new SearchPendingJualAdapter.PendingViewHolder(view);
 
         return adapter;
     }
 
 
+
     private void initProgressDialog() {
-        progressDialog = new ProgressDialog((PendingTransaksiActivity)mContext);
+        progressDialog = new ProgressDialog(mContext);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Sedang Memproses..");
         progressDialog.setCancelable(false);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull PendingViewHolder holder, int position) {
         initProgressDialog();
-        final Pending pending = mList.get(position);
+        final PendingJual pending = mList.get(position);
         holder.txtNama.setText(pending.getNama());
         holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(mContext, DetailPendingBeliActivity.class);
+                Intent intent = new Intent(mContext, DetailPendingJualActivity.class);
                 intent.putExtra(DATA_PENDING, pending);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
         });
 
+
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, EditPendingBeliActivity.class);
+                Intent intent = new Intent(mContext, EditPendingJualActivity.class);
                 intent.putExtra(DATA_PENDING, pending);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
@@ -115,10 +117,10 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
                                 String token = pref.getString(ACCESTOKEN, "");
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<Pending> call = apiInterface.deletePending(token, pending.getIdPending());
-                                call.enqueue(new Callback<Pending>() {
+                                Call<PendingJual> call = apiInterface.deletePendingJual(token, pending.getIdPending());
+                                call.enqueue(new Callback<PendingJual>() {
                                     @Override
-                                    public void onResponse(Call<Pending> call, Response<Pending> response) {
+                                    public void onResponse(Call<PendingJual> call, Response<PendingJual> response) {
                                         progressDialog.dismiss();
                                         if (response.body().getMessage().equals("success")){
                                             mList.remove(pending);
@@ -136,7 +138,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
                                     }
 
                                     @Override
-                                    public void onFailure(Call<Pending> call, Throwable t) {
+                                    public void onFailure(Call<PendingJual> call, Throwable t) {
                                         progressDialog.dismiss();
                                         t.printStackTrace();
                                         Toast.makeText(mContext, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
@@ -147,13 +149,15 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
                         .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
+
                             }
                         })
                         .create();
+
                 dialog.show();
             }
         });
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.yayanheryanto.larismotor.adapter;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,8 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.pending.DetailPendingBeliActivity;
-import com.yayanheryanto.larismotor.view.pending.EditPendingBeliActivity;
-import com.yayanheryanto.larismotor.view.LoginActivity;
-import com.yayanheryanto.larismotor.view.pending.PendingTransaksiActivity;
 import com.yayanheryanto.larismotor.model.Pending;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.view.pending.DetailPendingBeliActivity;
+import com.yayanheryanto.larismotor.view.pending.EditPendingBeliActivity;
 
 import java.util.List;
 
@@ -37,19 +37,17 @@ import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
-public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.PendingViewHolder>{
+public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPendingBeliAdapter.PendingViewHolder>{
 
 
     private Context mContext;
     private List<Pending> mList;
-    private FragmentManager parentActivity;
-    private PendingBeliAdapter adapter;
+    private SearchPendingBeliAdapter adapter;
     private ProgressDialog progressDialog = null;
 
-    public PendingBeliAdapter(Context mContext, List<Pending> mList, FragmentManager parentActivity) {
+    public SearchPendingBeliAdapter(Context mContext, List<Pending> mList) {
         this.mContext = mContext;
         this.mList = mList;
-        this.parentActivity = parentActivity;
         this.adapter = this;
     }
 
@@ -57,14 +55,14 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
     public PendingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.pending_beli, null, false);
-        PendingBeliAdapter.PendingViewHolder adapter = new PendingBeliAdapter.PendingViewHolder(view);
+        SearchPendingBeliAdapter.PendingViewHolder adapter = new SearchPendingBeliAdapter.PendingViewHolder(view);
 
         return adapter;
     }
 
 
     private void initProgressDialog() {
-        progressDialog = new ProgressDialog((PendingTransaksiActivity)mContext);
+        progressDialog = new ProgressDialog(mContext);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Sedang Memproses..");
         progressDialog.setCancelable(false);
@@ -77,6 +75,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
         final Pending pending = mList.get(position);
         holder.txtNama.setText(pending.getNama());
         holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
+        Log.d("Hhhh", pending.getNamaMerk() + " " + pending.getNamaTipe());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

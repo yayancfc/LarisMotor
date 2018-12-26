@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.yayanheryanto.larismotor">
 
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +24,18 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.com.vansuita.pickimage.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/picker_provider_paths" />
+        </provider>
+
         <activity android:name=".view.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,8 +64,8 @@
         <activity android:name=".view.pending.AddPendingBeliActivity" />
         <activity android:name=".view.pending.AddpendingJualActivity" />
         <activity android:name=".view.pending.EditPendingBeliActivity" />
-        <activity android:name=".view.owner.DetailPendingBeliActivity" />
-        <activity android:name=".view.owner.DetailPendingJualActivity" />
+        <activity android:name=".view.pending.DetailPendingBeliActivity" />
+        <activity android:name=".view.pending.DetailPendingJualActivity" />
         <activity android:name=".view.pending.EditPendingJualActivity" />
         <activity android:name=".view.sales.EditProfileSalesActivity" />
         <activity android:name=".view.sales.MotorSalesActivity" />
@@ -55,7 +80,9 @@
             android:screenOrientation="landscape" />
         <activity android:name=".view.laporan.FilterActivity" />
         <activity android:name=".view.owner.CariCustomerActivity" />
-        <activity android:name=".view.owner.CariMotorActivity"></activity>
+        <activity android:name=".view.owner.CariMotorActivity" />
+        <activity android:name=".view.pending.SearchPendingJualActivity" />
+        <activity android:name=".view.pending.SearchPendingBeliActivity"></activity>
     </application>
 
 </manifest>

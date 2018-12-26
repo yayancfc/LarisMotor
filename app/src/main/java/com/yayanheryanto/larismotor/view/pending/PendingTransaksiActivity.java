@@ -1,13 +1,14 @@
 package com.yayanheryanto.larismotor.view.pending;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,8 @@ public class PendingTransaksiActivity extends AppCompatActivity {
     private ViewPager view_pager;
     private TabLayout tab_layout;
     private int currentPage = 0;
+    private SearchView searchView;
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,10 @@ public class PendingTransaksiActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_master, menu);
+        getMenuInflater().inflate(R.menu.menu_pending, menu);
+        menuItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView)menuItem.getActionView();
+        searchView.setIconifiedByDefault(false);
 
         return true;
     }
@@ -58,9 +64,28 @@ public class PendingTransaksiActivity extends AppCompatActivity {
                 }
                 return true;
 
+            case R.id.action_search:
+                int pos = view_pager.getCurrentItem();
+                if (pos==0){
+                    Intent intent = new Intent(PendingTransaksiActivity.this, SearchPendingBeliActivity.class);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(PendingTransaksiActivity.this, SearchPendingJualActivity.class);
+                    startActivity(intent);
+                }
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        searchView.setIconifiedByDefault(true);
+        menuItem.collapseActionView();
+        searchView.onActionViewExpanded();
     }
 
     private void initComponent() {

@@ -1,34 +1,32 @@
-package com.yayanheryanto.larismotor.view.owner;
+package com.yayanheryanto.larismotor.view.pending;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.model.PendingJual;
+import com.yayanheryanto.larismotor.model.Pending;
 
 import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 
-public class DetailPendingJualActivity extends AppCompatActivity {
+public class DetailPendingBeliActivity extends AppCompatActivity {
 
-    private TextView txtNama, txtAlamat, txtNoTelepon, txtMerk, txtTipe, txtNoPolisi, txtNoMesin, txtTahun, txtHarga;
-    private PendingJual pending;
+    private TextView txtNama, txtAlamat, txtNoTelepon, txtMerk, txtTipe, txtTahun, txtHarga;
+    private Pending pending;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_pending_jual);
+        setContentView(R.layout.activity_detail_pending_beli);
 
 
         txtNama = findViewById(R.id.nama);
         txtAlamat = findViewById(R.id.alamat);
         txtNoTelepon = findViewById(R.id.telepon);
-        txtMerk = findViewById(R.id.merk);
-        txtTipe = findViewById(R.id.tipe);
+        txtMerk = findViewById(R.id.nama_merk);
+        txtTipe = findViewById(R.id.nama_tipe);
         txtTahun = findViewById(R.id.tahun);
         txtHarga = findViewById(R.id.harga);
-        txtNoMesin = findViewById(R.id.no_mesin);
-        txtNoPolisi = findViewById(R.id.no_polisi);
 
         getFromIntent();
 
@@ -42,11 +40,11 @@ public class DetailPendingJualActivity extends AppCompatActivity {
         txtNama.setText(pending.getNama());
         txtAlamat.setText(pending.getAlamat());
         txtNoTelepon.setText(pending.getNoTelp());
-        txtMerk.setText(pending.getMerk());
-        txtTipe.setText(pending.getTipe());
-        txtNoPolisi.setText(pending.getNoPolisi());
-        txtNoMesin.setText(pending.getNoMesin());
+        txtMerk.setText(pending.getNamaMerk());
+        txtTipe.setText(pending.getNamaTipe());
         txtTahun.setText(""+pending.getTahun());
         txtHarga.setText("Rp. "+pending.getHarga());
     }
+
+
 }

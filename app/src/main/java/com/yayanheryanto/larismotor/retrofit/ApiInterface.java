@@ -137,6 +137,7 @@ public interface ApiInterface {
     Call<List<MerkTipe>> getTipeMotor();
 
 
+
     @GET("api/getPendingBeli")
     Call<List<Pending>> getPendingBeli();
 
@@ -151,7 +152,8 @@ public interface ApiInterface {
                                  @Field("nama") String nama,
                                  @Field("alamat") String alamat,
                                  @Field("telepon") String telepon,
-                                 @Field("nama_motor") String nama_motor,
+                                 @Field("id_merk") int id_merk,
+                                 @Field("id_tipe") int id_tipe,
                                  @Field("tahun") String tahun,
                                  @Field("harga") String harga);
 
@@ -161,8 +163,8 @@ public interface ApiInterface {
                                  @Field("nama") String nama,
                                  @Field("alamat") String alamat,
                                  @Field("telepon") String telepon,
-                                 @Field("merk") String merk,
-                                 @Field("tipe") String tipe,
+                                 @Field("id_merk") int id_merk,
+                                 @Field("id_tipe") int id_tipe,
                                  @Field("no_mesin") String no_mesin,
                                  @Field("no_polisi") String no_polisi,
                                  @Field("tahun") String tahun,
@@ -176,8 +178,8 @@ public interface ApiInterface {
                                     @Field("nama") String nama,
                                     @Field("alamat") String alamat,
                                     @Field("telepon") String telepon,
-                                    @Field("merk") String merk,
-                                    @Field("tipe") String tipe,
+                                    @Field("id_merk") int id_merk,
+                                    @Field("id_tipe") int id_tipe,
                                     @Field("no_mesin") String no_mesin,
                                     @Field("no_polisi") String no_polisi,
                                     @Field("tahun") String tahun,
@@ -196,7 +198,8 @@ public interface ApiInterface {
                                 @Field("nama") String nama,
                                 @Field("alamat") String alamat,
                                 @Field("telepon") String telepon,
-                                @Field("nama_motor") String nama_motor,
+                                @Field("id_merk") int id_merk,
+                                @Field("id_tipe") int id_tipe,
                                 @Field("tahun") String tahun,
                                 @Field("harga") String harga);
 
@@ -204,7 +207,6 @@ public interface ApiInterface {
     @POST("api/deletePendingJual")
     Call<PendingJual> deletePendingJual(@Header("Authorization") String authorization,
                                         @Field("id_pending") int id_pending);
-
     @FormUrlEncoded
     @POST("api/getProfile")
     Call<User> getProfile(@Header("Authorization") String authorization,
@@ -376,5 +378,12 @@ public interface ApiInterface {
     @GET("api/getFilterSales")
     Call<List<Sales>> getFilterSales(@Header("Authorization") String authorization);
 
+    @FormUrlEncoded
+    @POST("api/searchPendingBeli")
+    Call<List<Pending>> searchPendingBeli(@Field("nama") String nama);
+
+    @FormUrlEncoded
+    @POST("api/searchPendingJual")
+    Call<List<PendingJual>> searchPendingJual(@Field("nama") String nama);
 
 }

@@ -53,4 +53,7 @@ dependencies {
 
     //compressor
     implementation 'id.zelory:compressor:2.1.0'
+
+    //pickeer
+    implementation 'com.github.jrvansuita:PickImage:+'
 }

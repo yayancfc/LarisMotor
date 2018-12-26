@@ -1,8 +1,9 @@
 package com.yayanheryanto.larismotor.model;
 
+
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -13,6 +14,14 @@ public class Pending implements Parcelable
     @SerializedName("message")
     @Expose
     private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     @SerializedName("id_pending")
     @Expose
@@ -26,27 +35,24 @@ public class Pending implements Parcelable
     @SerializedName("no_telp")
     @Expose
     private String noTelp;
-    @SerializedName("nama_motor")
-    @Expose
-    private String namaMotor;
     @SerializedName("tahun")
     @Expose
     private Integer tahun;
     @SerializedName("harga")
     @Expose
     private Integer harga;
-    @SerializedName("status")
+    @SerializedName("nama_merk")
     @Expose
-    private Integer status;
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
+    private String namaMerk;
+    @SerializedName("id_merk")
+    @Expose
+    private Integer idMerk;
+    @SerializedName("nama_tipe")
+    @Expose
+    private String namaTipe;
+    @SerializedName("id_tipe")
+    @Expose
+    private Integer idTipe;
     public final static Parcelable.Creator<Pending> CREATOR = new Creator<Pending>() {
 
 
@@ -69,10 +75,12 @@ public class Pending implements Parcelable
         this.nama = ((String) in.readValue((String.class.getClassLoader())));
         this.alamat = ((String) in.readValue((String.class.getClassLoader())));
         this.noTelp = ((String) in.readValue((String.class.getClassLoader())));
-        this.namaMotor = ((String) in.readValue((String.class.getClassLoader())));
         this.tahun = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.harga = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.status = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.namaMerk = ((String) in.readValue((String.class.getClassLoader())));
+        this.idMerk = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.namaTipe = ((String) in.readValue((String.class.getClassLoader())));
+        this.idTipe = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public Pending() {
@@ -110,14 +118,6 @@ public class Pending implements Parcelable
         this.noTelp = noTelp;
     }
 
-    public String getNamaMotor() {
-        return namaMotor;
-    }
-
-    public void setNamaMotor(String namaMotor) {
-        this.namaMotor = namaMotor;
-    }
-
     public Integer getTahun() {
         return tahun;
     }
@@ -134,12 +134,36 @@ public class Pending implements Parcelable
         this.harga = harga;
     }
 
-    public Integer getStatus() {
-        return status;
+    public String getNamaMerk() {
+        return namaMerk;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setNamaMerk(String namaMerk) {
+        this.namaMerk = namaMerk;
+    }
+
+    public Integer getIdMerk() {
+        return idMerk;
+    }
+
+    public void setIdMerk(Integer idMerk) {
+        this.idMerk = idMerk;
+    }
+
+    public String getNamaTipe() {
+        return namaTipe;
+    }
+
+    public void setNamaTipe(String namaTipe) {
+        this.namaTipe = namaTipe;
+    }
+
+    public Integer getIdTipe() {
+        return idTipe;
+    }
+
+    public void setIdTipe(Integer idTipe) {
+        this.idTipe = idTipe;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -147,10 +171,12 @@ public class Pending implements Parcelable
         dest.writeValue(nama);
         dest.writeValue(alamat);
         dest.writeValue(noTelp);
-        dest.writeValue(namaMotor);
         dest.writeValue(tahun);
         dest.writeValue(harga);
-        dest.writeValue(status);
+        dest.writeValue(namaMerk);
+        dest.writeValue(idMerk);
+        dest.writeValue(namaTipe);
+        dest.writeValue(idTipe);
     }
 
     public int describeContents() {

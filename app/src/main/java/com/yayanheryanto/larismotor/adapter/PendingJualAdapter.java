@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.owner.DetailPendingJualActivity;
+import com.yayanheryanto.larismotor.view.pending.DetailPendingJualActivity;
 import com.yayanheryanto.larismotor.view.pending.EditPendingJualActivity;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.view.pending.PendingTransaksiActivity;
@@ -78,7 +78,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
         initProgressDialog();
         final PendingJual pending = mList.get(position);
         holder.txtNama.setText(pending.getNama());
-        holder.txtNamaMotor.setText(pending.getMerk() + " " + pending.getTipe());
+        holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
