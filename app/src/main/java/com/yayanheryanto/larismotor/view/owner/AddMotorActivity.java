@@ -67,6 +67,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private int merkMotor, tipeMotor;
     private ProgressDialog dialog;
     private TextInputLayout terjual;
+    private File file, file2 = null;
 
 
     @Override
@@ -274,10 +275,22 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         builder.addFormDataPart("cicilan",cicilanMotor);
         builder.addFormDataPart("tenor",tenorMotor);
 
-        for (int i = 0; i < images.size(); i++) {
-            File file = new File(images.get(i).path);
+
+        if (images == null) {
             builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-            Log.d(DEBUG, file.getName());
+        } else {
+            for (int i = 0; i < images.size(); i++) {
+                file2 = new File(images.get(i).path);
+                try {
+                    file = new Compressor(this).compressToFile(file2);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("Error", e.getMessage());
+                }
+                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+                Log.d(DEBUG, file.getName());
+            }
         }
 
         MultipartBody requestBody = builder.build();

@@ -81,8 +81,14 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
         Picasso.get()
                 .load(BASE_URL + "storage/motor/" + motor.getGambar()).error(R.drawable.mobar)
                 .into(holder.imageMotor);
-        holder.textHjm.setText("" + motor.getHarga());
-        holder.textNopol.setText(motor.getNoPolisi());
+
+        holder.textHjm.setText("Rp. " + motor.getHarga());
+
+        if (motor.getNoPolisi() == null) {
+            holder.textNopol.setText("");
+        } else {
+            holder.textNopol.setText(motor.getNoPolisi());
+        }
 
         if (motor.getStatus().equals(0)) {
             holder.txtStatus.setText("Tersedia");

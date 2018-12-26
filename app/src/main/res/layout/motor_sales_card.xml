@@ -48,13 +48,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rp. : "
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp" />
-
-                    <TextView
                         android:id="@+id/txt_hjm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

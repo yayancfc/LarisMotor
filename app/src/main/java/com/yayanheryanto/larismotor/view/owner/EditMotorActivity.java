@@ -32,9 +32,11 @@ import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.zelory.compressor.Compressor;
 import in.myinnos.awesomeimagepicker.activities.AlbumSelectActivity;
 import in.myinnos.awesomeimagepicker.helpers.ConstantsCustomGallery;
 import in.myinnos.awesomeimagepicker.models.Image;
@@ -67,6 +69,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     private Motor motor;
     private String s1, s2;
     private TextInputLayout terjual;
+    private File file, file2 = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -389,10 +392,20 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
 
         if (images != null) {
             for (int i = 0; i < images.size(); i++) {
-                File file = new File(images.get(i).path);
+                file2 = new File(images.get(i).path);
+                try {
+                    file = new Compressor(this).compressToFile(file2);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("Error", e.getMessage());
+                }
+
                 builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
                 Log.d(DEBUG, file.getName());
             }
+        }else{
+            builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
         }
 
         MultipartBody requestBody = builder.build();

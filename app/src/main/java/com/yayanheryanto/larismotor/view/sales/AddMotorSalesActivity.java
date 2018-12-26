@@ -31,9 +31,11 @@ import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.zelory.compressor.Compressor;
 import in.myinnos.awesomeimagepicker.activities.AlbumSelectActivity;
 import in.myinnos.awesomeimagepicker.helpers.ConstantsCustomGallery;
 import in.myinnos.awesomeimagepicker.models.Image;
@@ -64,6 +66,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     private int merkMotor, tipeMotor;
     private ProgressDialog dialog;
     private TextInputLayout terjual;
+    private File file, file2 = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,10 +269,21 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         builder.addFormDataPart("cicilan",cicilanMotor);
         builder.addFormDataPart("tenor",tenorMotor);
 
-        for (int i = 0; i < images.size(); i++) {
-            File file = new File(images.get(i).path);
+        if (images == null) {
             builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-            Log.d(DEBUG, file.getName());
+        }else {
+            for (int i = 0; i < images.size(); i++) {
+                file2 = new File(images.get(i).path);
+                try {
+                    file = new Compressor(this).compressToFile(file2);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("Error", e.getMessage());
+                }
+                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+                Log.d(DEBUG, file.getName());
+            }
         }
 
         MultipartBody requestBody = builder.build();

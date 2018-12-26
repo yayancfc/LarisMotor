@@ -80,8 +80,13 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
                 .load(BASE_URL + "storage/motor/" + motor.getGambar()).error(R.drawable.mobar)
                 .into(motorViewHolder.imageMotor);
 
-        motorViewHolder.textHjm.setText("" + motor.getHarga());
-        motorViewHolder.textNopol.setText(motor.getNoPolisi());
+        motorViewHolder.textHjm.setText("Rp. " + motor.getHarga());
+
+        if (motor.getNoPolisi() == null) {
+            motorViewHolder.textNopol.setText("");
+        } else {
+            motorViewHolder.textNopol.setText(motor.getNoPolisi());
+        }
 
         if (motor.getStatus().equals(0)) {
             motorViewHolder.txtStatus.setText("Tersedia");
