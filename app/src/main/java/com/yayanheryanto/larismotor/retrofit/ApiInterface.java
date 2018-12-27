@@ -239,8 +239,8 @@ public interface ApiInterface {
                                   @Field("no_ktp_sales") String no_ktp_sales);
 
 
-    @GET("api/getCustomer")
-    Call<List<Customer>> getCustomer();
+    @POST("api/getCustomer")
+    Call<List<Customer>> getCustomer(@Query("id_user") String id_user);
 
 
     @GET("api/getCustomerById/{no_ktp}")
@@ -249,20 +249,6 @@ public interface ApiInterface {
     @GET("api/getMotorById/{no_mesin}")
     Call<List<Motor>> getMotorById(@Query("no_mesin") String no_mesin);
 
-
-    @FormUrlEncoded
-    @POST("api/addCustomer")
-    Call<Customer> addCustomer(@Header("Authorization") String authorization,
-                               @Field("no_ktp") String no_ktp,
-                               @Field("nama") String nama,
-                               @Field("alamat") String alamat,
-                               @Field("no_telp") String no_telp,
-                               @Field("ttl") String ttl,
-                               @Field("Agama") String Agama,
-                               @Field("pekerjaan") String pekerjaan,
-                               @Field("whatsapp") String whatsapp,
-                               @Field("instagram") String instagram,
-                               @Field("facebook") String facebook);
 
     @FormUrlEncoded
     @POST("api/mokasWithNoCust")
@@ -363,7 +349,8 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/searchCustomer")
-    Call<List<Customer>> searchCustomer(@Field("nama") String nama);
+    Call<List<Customer>> searchCustomer(@Field("id_user") String id_user,
+                                        @Field("nama") String nama);
 
 
     @FormUrlEncoded

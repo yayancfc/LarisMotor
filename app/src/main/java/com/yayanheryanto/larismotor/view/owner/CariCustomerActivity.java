@@ -1,11 +1,10 @@
 package com.yayanheryanto.larismotor.view.owner;
 
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.Context;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -26,6 +25,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class CariCustomerActivity extends AppCompatActivity {
 
@@ -52,17 +54,19 @@ public class CariCustomerActivity extends AppCompatActivity {
         dialog.setCancelable(false);
     }
 
-    private void getCustomer(String nama){
+    private void getCustomer(String nama) {
         dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Customer>> call = apiInterface.searchCustomer(nama);
+        Call<List<Customer>> call = apiInterface.searchCustomer(id, nama);
         call.enqueue(new Callback<List<Customer>>() {
             @Override
             public void onResponse(Call<List<Customer>> call, Response<List<Customer>> response) {
                 dialog.dismiss();
-                if (response.body().isEmpty()){
+                if (response.body().isEmpty()) {
                     Toast.makeText(CariCustomerActivity.this, "Data Tidak Ditemukan", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     List<Customer> list = response.body();
 
                     adapter = new CustomerAdapter(getApplicationContext(), list);
@@ -87,11 +91,11 @@ public class CariCustomerActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu_cari_act, menu);
 
         MenuItem searchMenu = menu.findItem(R.id.action_search_act);
-        SearchView searchView = (SearchView)searchMenu.getActionView();
+        SearchView searchView = (SearchView) searchMenu.getActionView();
         searchView.setQueryHint("Masukan Nama Customer");
         searchView.setIconified(false);
         searchMenu.expandActionView();
-        searchView.setQuery("",false);
+        searchView.setQuery("", false);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
