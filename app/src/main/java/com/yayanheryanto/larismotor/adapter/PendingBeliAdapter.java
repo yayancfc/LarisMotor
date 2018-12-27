@@ -75,7 +75,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
     public void onBindViewHolder(@NonNull PendingViewHolder holder, int position) {
         initProgressDialog();
         final Pending pending = mList.get(position);
-        holder.txtNama.setText(pending.getNama());
+        holder.txtNama.setText(convertToTitleCaseIteratingChars(pending.getNama()));
         holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -177,4 +177,28 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
             imgEdit = itemView.findViewById(R.id.imgEdit);
         }
     }
+
+    public static String convertToTitleCaseIteratingChars(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder converted = new StringBuilder();
+
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()) {
+            if (Character.isSpaceChar(ch)) {
+                convertNext = true;
+            } else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+
+        return converted.toString();
+    }
+
 }

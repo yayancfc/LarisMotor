@@ -2,6 +2,8 @@ package com.yayanheryanto.larismotor.fragment;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,8 +66,10 @@ public class PendingJualFragment extends Fragment {
 
     private void getPendingJual() {
         dialog.show();
+        SharedPreferences pref = this.getActivity().getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<PendingJual>> call = apiInterface.getPendingJual();
+        Call<List<PendingJual>> call = apiInterface.getPendingJual(id);
         call.enqueue(new Callback<List<PendingJual>>() {
             @Override
             public void onResponse(Call<List<PendingJual>> call, Response<List<PendingJual>> response) {

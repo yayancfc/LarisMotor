@@ -77,7 +77,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
     public void onBindViewHolder(@NonNull PendingViewHolder holder, int position) {
         initProgressDialog();
         final PendingJual pending = mList.get(position);
-        holder.txtNama.setText(pending.getNama());
+        holder.txtNama.setText(convertToTitleCaseIteratingChars(pending.getNama()));
         holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
 
 
@@ -182,5 +182,28 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
             imgDelete = itemView.findViewById(R.id.imgDelete);
             imgEdit = itemView.findViewById(R.id.imgEdit);
         }
+    }
+
+    public static String convertToTitleCaseIteratingChars(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder converted = new StringBuilder();
+
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()) {
+            if (Character.isSpaceChar(ch)) {
+                convertNext = true;
+            } else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+
+        return converted.toString();
     }
 }

@@ -137,18 +137,18 @@ public interface ApiInterface {
     Call<List<MerkTipe>> getTipeMotor();
 
 
+    @POST("api/getPendingBeli")
+    Call<List<Pending>> getPendingBeli(@Query("id_user") String id_user);
 
-    @GET("api/getPendingBeli")
-    Call<List<Pending>> getPendingBeli();
 
-
-    @GET("api/getPendingJual")
-    Call<List<PendingJual>> getPendingJual();
+    @POST("api/getPendingJual")
+    Call<List<PendingJual>> getPendingJual(@Query("id_user") String id_user);
 
 
     @FormUrlEncoded
     @POST("api/addPendingBeli")
     Call<Pending> addPendingBeli(@Header("Authorization") String authorization,
+                                 @Field("id_user") int id_user,
                                  @Field("nama") String nama,
                                  @Field("alamat") String alamat,
                                  @Field("telepon") String telepon,
@@ -160,6 +160,7 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("api/addPendingJual")
     Call<Pending> addPendingJual(@Header("Authorization") String authorization,
+                                 @Field("id_user") int id_user,
                                  @Field("nama") String nama,
                                  @Field("alamat") String alamat,
                                  @Field("telepon") String telepon,
@@ -207,6 +208,7 @@ public interface ApiInterface {
     @POST("api/deletePendingJual")
     Call<PendingJual> deletePendingJual(@Header("Authorization") String authorization,
                                         @Field("id_pending") int id_pending);
+
     @FormUrlEncoded
     @POST("api/getProfile")
     Call<User> getProfile(@Header("Authorization") String authorization,
@@ -367,10 +369,12 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/searchPendingBeli")
-    Call<List<Pending>> searchPendingBeli(@Field("nama") String nama);
+    Call<List<Pending>> searchPendingBeli(@Field("id_user") String id_user,
+                                          @Field("nama") String nama);
 
     @FormUrlEncoded
     @POST("api/searchPendingJual")
-    Call<List<PendingJual>> searchPendingJual(@Field("nama") String nama);
+    Call<List<PendingJual>> searchPendingJual(@Field("id_user") String id_user,
+                                              @Field("nama") String nama);
 
 }

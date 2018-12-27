@@ -183,7 +183,7 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
         String harga = txtHarga.getText().toString();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Pending> call = apiInterface.addPendingBeli(token, nama, alamat, telepon, merkMotor, tipeMotor, tahun, harga);
+        Call<Pending> call = apiInterface.addPendingBeli(token, Integer.valueOf(id), nama, alamat, telepon, merkMotor, tipeMotor, tahun, harga);
         call.enqueue(new Callback<Pending>() {
             @Override
             public void onResponse(Call<Pending> call, Response<Pending> response) {

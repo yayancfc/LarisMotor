@@ -1,6 +1,8 @@
 package com.yayanheryanto.larismotor.view.pending;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +25,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class SearchPendingBeliActivity extends AppCompatActivity {
 
@@ -77,8 +82,10 @@ public class SearchPendingBeliActivity extends AppCompatActivity {
 
     private void getPendingBeli(String nama) {
         dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Pending>> call = apiInterface.searchPendingBeli(nama);
+        Call<List<Pending>> call = apiInterface.searchPendingBeli(id,nama);
         call.enqueue(new Callback<List<Pending>>() {
             @Override
             public void onResponse(Call<List<Pending>> call, Response<List<Pending>> response) {

@@ -1,6 +1,8 @@
 package com.yayanheryanto.larismotor.view.pending;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+
 public class SearchPendingJualActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -44,8 +49,10 @@ public class SearchPendingJualActivity extends AppCompatActivity {
 
     private void getPendingJual(String nama) {
         dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<PendingJual>> call = apiInterface.searchPendingJual(nama);
+        Call<List<PendingJual>> call = apiInterface.searchPendingJual(id,nama);
         call.enqueue(new Callback<List<PendingJual>>() {
             @Override
             public void onResponse(Call<List<PendingJual>> call, Response<List<PendingJual>> response) {

@@ -187,7 +187,7 @@ public class AddpendingJualActivity extends AppCompatActivity implements View.On
         String harga = txtHarga.getText().toString();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Pending> call = apiInterface.addPendingJual(token, nama, alamat, telepon, merkMotor, tipeMotor, no_mesin, no_polisi, tahun, harga);
+        Call<Pending> call = apiInterface.addPendingJual(token, Integer.valueOf(id), nama, alamat, telepon, merkMotor, tipeMotor, no_mesin, no_polisi, tahun, harga);
         call.enqueue(new Callback<Pending>() {
             @Override
             public void onResponse(Call<Pending> call, Response<Pending> response) {
