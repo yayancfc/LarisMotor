@@ -1,7 +1,9 @@
 package com.yayanheryanto.larismotor.view.sales;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +37,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class MotorSalesActivity extends AppCompatActivity {
 
@@ -78,8 +83,10 @@ public class MotorSalesActivity extends AppCompatActivity {
 
     private void getMotor() {
         dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Motor>> call = apiInterface.getMotor();
+        Call<List<Motor>> call = apiInterface.getMotor(id);
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {

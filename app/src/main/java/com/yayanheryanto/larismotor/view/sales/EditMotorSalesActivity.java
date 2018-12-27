@@ -74,13 +74,11 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
     private ArrayAdapter<String> adapter, adapter2;
     private ImageView image1, image2, image3;
     private ArrayList<Image> images;
-    private EditText no_mesin, no_polisi, no_rangka, tahun, harga, harga_terjual, dp, cicilan, tenor;
-    private RadioGroup status;
+    private EditText no_mesin, no_polisi, no_rangka, tahun, harga, dp, cicilan, tenor;
     private int merkMotor, tipeMotor;
     private ProgressDialog dialog;
     private Motor motor;
     private String s1, s2;
-    private TextInputLayout terjual;
     private Uri tempUri;
 
     private File file, file2 = null;
@@ -100,13 +98,10 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         no_polisi = findViewById(R.id.no_polisi);
         no_rangka = findViewById(R.id.no_rangka);
         tahun = findViewById(R.id.tahun);
-        status = findViewById(R.id.status);
         harga = findViewById(R.id.harga);
-        harga_terjual = findViewById(R.id.harga_terjual);
         cicilan = findViewById(R.id.cicilan);
         tenor = findViewById(R.id.tenor);
         dp = findViewById(R.id.dp);
-        terjual = findViewById(R.id.terjual);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
@@ -177,11 +172,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         harga.setText("" + motor.getHarga());
 
 
-        if (motor.getHargaTerjual() == null || motor.getHargaTerjual() == 0) {
-            harga_terjual.setText("");
-        } else {
-            harga_terjual.setText("" + motor.getHargaTerjual());
-        }
+
 
         if (motor.getDp() == null || motor.getDp() == 0) {
             dp.setText("");
@@ -200,28 +191,6 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         } else {
             tenor.setText("" + motor.getTenor());
         }
-
-        if (motor.getStatus().equals(0)) {
-            status.check(R.id.radio_available);
-            terjual.setVisibility(View.GONE);
-
-        } else {
-            status.check(R.id.radio_sold_out);
-            terjual.setVisibility(View.VISIBLE);
-        }
-
-        status.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                if (status.getCheckedRadioButtonId() == R.id.radio_available) {
-                    terjual.setVisibility(View.GONE);
-                } else {
-                    terjual.setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
 
 
         if (motor.getGambar() != null) {
@@ -383,20 +352,13 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String token = pref.getString(ACCESTOKEN, "");
 
-        int selectedId = status.getCheckedRadioButtonId();
-        RadioButton radioButton = (RadioButton) findViewById(selectedId);
-        String tersedia = radioButton.getText().toString();
-        String statusMotor = "1";
-        if (tersedia.equalsIgnoreCase("tersedia")) {
-            statusMotor = "0";
-        }
+
 
         String mesin = no_mesin.getText().toString();
         String polisi = no_polisi.getText().toString();
         String rangka = no_rangka.getText().toString();
         String tahunMotor = tahun.getText().toString();
         String hargaMotor = harga.getText().toString();
-        String hargaTerjual = harga_terjual.getText().toString();
         String dpMotor = dp.getText().toString();
         String cicilanMotor = cicilan.getText().toString();
         String tenorMotor = tenor.getText().toString();
@@ -409,11 +371,10 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         builder.addFormDataPart("no_mesin", mesin);
         builder.addFormDataPart("no_rangka", rangka);
         builder.addFormDataPart("tahun", tahunMotor);
-        builder.addFormDataPart("status", statusMotor);
+        builder.addFormDataPart("status", "0");
         builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
         builder.addFormDataPart("merk", String.valueOf(merkMotor));
         builder.addFormDataPart("harga", hargaMotor);
-        builder.addFormDataPart("harga_terjual", hargaTerjual);
         builder.addFormDataPart("dp", dpMotor);
         builder.addFormDataPart("cicilan", cicilanMotor);
         builder.addFormDataPart("tenor", tenorMotor);

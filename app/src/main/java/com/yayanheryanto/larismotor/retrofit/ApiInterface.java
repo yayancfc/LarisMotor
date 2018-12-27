@@ -26,8 +26,8 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @GET("api/getMotor")
-    Call<List<Motor>> getMotor();
+    @POST("api/getMotor")
+    Call<List<Motor>> getMotor(@Query("id_user") String id_user);
 
     @GET("api/getId")
     Call<List<User>> getId();

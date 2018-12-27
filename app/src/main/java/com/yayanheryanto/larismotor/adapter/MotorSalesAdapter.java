@@ -122,6 +122,14 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
         }
 
 
+        SharedPreferences pref = mContext.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
+
+        if (!id.equals(motor.getIdUser()+"")) {
+            holder.imgEdit.setVisibility(View.GONE);
+            holder.imgDeelete.setVisibility(View.GONE);
+        }
+
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
