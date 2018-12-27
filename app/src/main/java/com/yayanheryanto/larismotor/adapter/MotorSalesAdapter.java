@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
+import com.yayanheryanto.larismotor.model.MerkTipe;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
@@ -75,7 +76,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
 
 
     @Override
-    public void onBindViewHolder(@NonNull MotorViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MotorViewHolder holder, int position) {
         initProgressDialog();
         final Motor motor = mList.get(position);
         Picasso.get()
@@ -84,8 +85,30 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
 
         holder.textHjm.setText("Rp. " + motor.getHarga());
 
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<List<MerkTipe>> call = apiInterface.getMerkById(motor.getIdMerk() + "", motor.getIdTipe() + "");
+        call.enqueue(new Callback<List<MerkTipe>>() {
+            @Override
+            public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
+                String merk = response.body().get(0).getNamaMerk();
+                String tipe = response.body().get(0).getNamaTipe();
+
+                holder.title.setText(merk + " " + tipe + " (" + motor.getTahun() + ")");
+
+            }
+
+            @Override
+            public void onFailure(Call<List<MerkTipe>> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(mContext, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+
         if (motor.getNoPolisi() == null) {
             holder.textNopol.setText("");
+            holder.textNopol.setVisibility(View.GONE);
         } else {
             holder.textNopol.setText(motor.getNoPolisi());
         }
@@ -187,8 +210,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
 
 
         private ImageView imageMotor, imgDeelete, imgEdit;
-        private TextView textNopol, textHjm, txtStatus;
-        ;
+        private TextView textNopol, textHjm, txtStatus, title;
         private View view;
 
         public MotorViewHolder(View itemView) {
@@ -202,6 +224,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
             textNopol = itemView.findViewById(R.id.txt_plat);
             textHjm = itemView.findViewById(R.id.txt_hjm);
             txtStatus = itemView.findViewById(R.id.txt_status);
+            title = itemView.findViewById(R.id.title);
 
         }
     }
