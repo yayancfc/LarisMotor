@@ -262,12 +262,22 @@
                 </LinearLayout>
 
                 <Button
+                    android:id="@+id/btnCamera"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:background="@drawable/round_button"
+                    android:text="Ambil Gambar"
+                    android:textColor="@android:color/white" />
+
+
+                <Button
                     android:id="@+id/btnImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_large"
                     android:background="@drawable/round_button"
-                    android:text="Upload Gambar"
+                    android:text="Buka Galeri"
                     android:textColor="@android:color/white" />
 
                 <Button

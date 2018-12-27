@@ -1,12 +1,20 @@
 package com.yayanheryanto.larismotor.view.sales;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,9 +38,12 @@ import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import id.zelory.compressor.Compressor;
@@ -54,7 +65,7 @@ import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 public class AddMotorSalesActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private Button btnUpload, btnSave;
+    private Button btnUpload, btnSave, btnCamera;
     private List<Merk> merk;
     private List<Tipe> tipe;
     private Spinner spinnerMerk, spinnerTipe;
@@ -67,14 +78,34 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     private ProgressDialog dialog;
     private TextInputLayout terjual;
     private File file, file2 = null;
+    private Uri tempUri;
+
+    protected static final int CAMERA_REQUEST = 110;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_motor_sales);
 
+        StrictMode.VmPolicy.Builder newbuilder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(newbuilder.build());
+        if (Build.VERSION.SDK_INT >= 23) {
+            int hasPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    // Display UI and wait for user interaction
+                    Toast.makeText(this, "You need to allow Camera permission", Toast.LENGTH_SHORT).show();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+                }
+                return;
+            }
+        }
+
         initProgressDialog();
 
+        btnCamera = findViewById(R.id.btnCamera);
         btnUpload = findViewById(R.id.btnImage);
         btnSave = findViewById(R.id.btnSave);
         spinnerMerk = findViewById(R.id.spinner1);
@@ -138,6 +169,8 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+        btnCamera.setOnClickListener(this);
+
 
 
     }
@@ -150,13 +183,13 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     }
 
     private void getMerk() {
-        dialog.show();
+//        dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<Merk>> call = apiInterface.getMerk();
         call.enqueue(new Callback<List<Merk>>() {
             @Override
             public void onResponse(Call<List<Merk>> call, Response<List<Merk>> response) {
-                dialog.dismiss();
+//                dialog.dismiss();
                 Log.d(DEBUG, String.valueOf(response.body().size()));
                 merk = response.body();
                 if (merk != null) {
@@ -171,7 +204,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void onFailure(Call<List<Merk>> call, Throwable t) {
-                dialog.dismiss();
+//                dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(AddMotorSalesActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
@@ -212,16 +245,21 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btnImage :
+        switch (view.getId()) {
+            case R.id.btnImage:
                 Intent intent = new Intent(this, AlbumSelectActivity.class);
                 intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 3); // set limit for image selection
                 startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
                 break;
 
-            case R.id.btnSave :
+            case R.id.btnSave:
                 uploadImage();
                 break;
+
+            case R.id.btnCamera:
+                goToCamera();
+                break;
+
         }
     }
 
@@ -326,20 +364,74 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             //The array list has the image paths of the selected images
             images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
 
+
             for (int i = 0; i < images.size(); i++) {
                 Uri uri = Uri.fromFile(new File(images.get(i).path));
-                if (i==0){
+                if (i == 0) {
                     image1.setImageURI(uri);
                 }
-                if (i==1){
+                if (i == 1) {
                     image2.setImageURI(uri);
                 }
-                if (i==2){
+                if (i == 2) {
                     image3.setImageURI(uri);
                 }
                 Log.d(DEBUG, String.valueOf(uri));
 
             }
+        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            image1.setImageBitmap(photo);
+            tempUri = getImageUri(getApplicationContext(), photo);
+            file = new File(getRealPathFromURI(tempUri));
+
         }
+    }
+
+    private void goToCamera() {
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA_REQUEST);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (tempUri != null) {
+            outState.putString("cameraImageUri", tempUri.toString());
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.containsKey("cameraImageUri")) {
+            tempUri = Uri.parse(savedInstanceState.getString("cameraImageUri"));
+        }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, timeStamp, null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        String path = "";
+        if (getContentResolver() != null) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+        return path;
     }
 }

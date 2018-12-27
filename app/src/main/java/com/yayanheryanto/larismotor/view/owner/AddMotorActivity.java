@@ -1,15 +1,22 @@
 package com.yayanheryanto.larismotor.view.owner;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -24,23 +31,25 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import id.zelory.compressor.Compressor;
 import in.myinnos.awesomeimagepicker.activities.AlbumSelectActivity;
 import in.myinnos.awesomeimagepicker.helpers.ConstantsCustomGallery;
 import in.myinnos.awesomeimagepicker.models.Image;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -55,7 +64,7 @@ import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class AddMotorActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btnUpload, btnSave;
+    private Button btnUpload, btnSave, btnCamera;
     private List<Merk> merk;
     private List<Tipe> tipe;
     private Spinner spinnerMerk, spinnerTipe;
@@ -68,6 +77,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private ProgressDialog dialog;
     private TextInputLayout terjual;
     private File file, file2 = null;
+    protected static final int CAMERA_REQUEST = 110;
+    private Uri tempUri;
 
 
     @Override
@@ -75,9 +86,24 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_motor);
 
+        StrictMode.VmPolicy.Builder newbuilder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(newbuilder.build());
+        if (Build.VERSION.SDK_INT >= 23) {
+            int hasPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    // Display UI and wait for user interaction
+                    Toast.makeText(this, "You need to allow Camera permission", Toast.LENGTH_SHORT).show();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+                }
+                return;
+            }
+        }
 
         initProgressDialog();
 
+        btnCamera = findViewById(R.id.btnCamera);
         btnUpload = findViewById(R.id.btnImage);
         btnSave = findViewById(R.id.btnSave);
         spinnerMerk = findViewById(R.id.spinner1);
@@ -101,8 +127,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
         getMerk();
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line);
-        adapter2 = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
+        adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
         spinnerMerk.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -142,6 +168,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+        btnCamera.setOnClickListener(this);
 
     }
 
@@ -154,19 +181,19 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void getMerk() {
-        dialog.show();
+//        dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<Merk>> call = apiInterface.getMerk();
         call.enqueue(new Callback<List<Merk>>() {
             @Override
             public void onResponse(Call<List<Merk>> call, Response<List<Merk>> response) {
-                dialog.dismiss();
+//                dialog.dismiss();
                 Log.d(DEBUG, String.valueOf(response.body().size()));
                 merk = response.body();
                 if (merk != null) {
-                    for (Merk merkMotor : merk){
+                    for (Merk merkMotor : merk) {
                         Log.d(DEBUG, merkMotor.getNamaMerk());
-                        adapter.add(merkMotor.getNamaMerk()) ;
+                        adapter.add(merkMotor.getNamaMerk());
                     }
 
                     spinnerMerk.setAdapter(adapter);
@@ -175,7 +202,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onFailure(Call<List<Merk>> call, Throwable t) {
-                dialog.dismiss();
+//                dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(AddMotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
@@ -195,7 +222,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                 tipe = response.body();
                 if (tipe != null) {
                     adapter2.clear();
-                    for (Tipe tipeMotor : tipe){
+                    for (Tipe tipeMotor : tipe) {
                         Log.d(DEBUG, tipeMotor.getNamaTipe());
                         adapter2.add(tipeMotor.getNamaTipe());
                     }
@@ -216,16 +243,21 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btnImage :
+        switch (view.getId()) {
+            case R.id.btnImage:
                 Intent intent = new Intent(this, AlbumSelectActivity.class);
                 intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 3); // set limit for image selection
                 startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
                 break;
 
-            case R.id.btnSave :
+            case R.id.btnSave:
                 uploadImage();
                 break;
+
+            case R.id.btnCamera:
+                goToCamera();
+                break;
+
         }
     }
 
@@ -242,7 +274,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         RadioButton radioButton = (RadioButton) findViewById(selectedId);
         String tersedia = radioButton.getText().toString();
         String statusMotor = "1";
-        if (tersedia.equalsIgnoreCase("tersedia")){
+        if (tersedia.equalsIgnoreCase("tersedia")) {
             statusMotor = "0";
         }
 
@@ -260,20 +292,20 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart("no_polisi",polisi);
-        builder.addFormDataPart("no_mesin",mesin);
-        builder.addFormDataPart("no_rangka",rangka);
-        builder.addFormDataPart("hjm",hjmMotor);
-        builder.addFormDataPart("tahun",tahunMotor);
-        builder.addFormDataPart("status",statusMotor);
-        builder.addFormDataPart("tipe",String.valueOf(tipeMotor));
-        builder.addFormDataPart("merk",String.valueOf(merkMotor));
-        builder.addFormDataPart("id_user",id);
-        builder.addFormDataPart("harga",hargaMotor);
-        builder.addFormDataPart("harga_terjual",hargaTerjual);
-        builder.addFormDataPart("dp",dpMotor);
-        builder.addFormDataPart("cicilan",cicilanMotor);
-        builder.addFormDataPart("tenor",tenorMotor);
+        builder.addFormDataPart("no_polisi", polisi);
+        builder.addFormDataPart("no_mesin", mesin);
+        builder.addFormDataPart("no_rangka", rangka);
+        builder.addFormDataPart("hjm", hjmMotor);
+        builder.addFormDataPart("tahun", tahunMotor);
+        builder.addFormDataPart("status", statusMotor);
+        builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
+        builder.addFormDataPart("merk", String.valueOf(merkMotor));
+        builder.addFormDataPart("id_user", id);
+        builder.addFormDataPart("harga", hargaMotor);
+        builder.addFormDataPart("harga_terjual", hargaTerjual);
+        builder.addFormDataPart("dp", dpMotor);
+        builder.addFormDataPart("cicilan", cicilanMotor);
+        builder.addFormDataPart("tenor", tenorMotor);
 
 
         if (images == null) {
@@ -301,15 +333,15 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<Motor> call, Response<Motor> response) {
                 dialog.dismiss();
                 Log.d(DEBUG, String.valueOf(response.body().getMessage()));
-                Log.v("cik",response.errorBody()+"") ;
-                if (response.body().getMessage().equals("success")){
+                Log.v("cik", response.errorBody() + "");
+                if (response.body().getMessage().equals("success")) {
                     Toast.makeText(AddMotorActivity.this, "Motor Berhasil Ditambah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddMotorActivity.this, MotorActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
-                }else{
+                } else {
                     Toast.makeText(AddMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddMotorActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -334,20 +366,74 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             //The array list has the image paths of the selected images
             images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
 
+
             for (int i = 0; i < images.size(); i++) {
                 Uri uri = Uri.fromFile(new File(images.get(i).path));
-                if (i==0){
+                if (i == 0) {
                     image1.setImageURI(uri);
                 }
-                if (i==1){
+                if (i == 1) {
                     image2.setImageURI(uri);
                 }
-                if (i==2){
+                if (i == 2) {
                     image3.setImageURI(uri);
                 }
                 Log.d(DEBUG, String.valueOf(uri));
 
             }
+        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            image1.setImageBitmap(photo);
+            tempUri = getImageUri(getApplicationContext(), photo);
+            file = new File(getRealPathFromURI(tempUri));
+
         }
+    }
+
+
+    private void goToCamera() {
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA_REQUEST);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (tempUri != null) {
+            outState.putString("cameraImageUri", tempUri.toString());
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.containsKey("cameraImageUri")) {
+            tempUri = Uri.parse(savedInstanceState.getString("cameraImageUri"));
+        }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, timeStamp, null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        String path = "";
+        if (getContentResolver() != null) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+        return path;
     }
 }
