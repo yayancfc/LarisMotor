@@ -102,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                Log.d(DEBUG, response.body().getMessage());
                 User user = response.body();
 
                 if (user.getMessage().equals("success")) {

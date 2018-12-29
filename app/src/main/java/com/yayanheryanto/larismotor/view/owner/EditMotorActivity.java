@@ -1,6 +1,7 @@
 package com.yayanheryanto.larismotor.view.owner;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,11 +10,14 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -62,7 +66,7 @@ import static com.yayanheryanto.larismotor.config.config.BASE_URL;
 import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
-import static com.yayanheryanto.larismotor.view.owner.AddMotorActivity.CAMERA_REQUEST;
+
 
 public class EditMotorActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -81,7 +85,12 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     private String s1, s2;
     private TextInputLayout terjual;
     private File file, file2 = null;
+
+    private final int CAMERA_REQUEST = 110;
+    private final int READ_EXTERNAL_STORAGE = 123;
+
     private Uri tempUri;
+    boolean buttonCamera, buttonGallery = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,18 +120,6 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            int hasPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                    // Display UI and wait for user interaction
-                    Toast.makeText(this, "You need to allow Camera permission", Toast.LENGTH_SHORT).show();
-                } else {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-                }
-                return;
-            }
-        }
 
         initProgressDialog();
 
@@ -243,13 +240,11 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void getMerk() {
-//        dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<Merk>> call = apiInterface.getMerk();
         call.enqueue(new Callback<List<Merk>>() {
             @Override
             public void onResponse(Call<List<Merk>> call, Response<List<Merk>> response) {
-//                dialog.dismiss();
                 Log.d(DEBUG, String.valueOf(response.body().size()));
                 merk = response.body();
                 if (merk != null) {
@@ -265,7 +260,6 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             public void onFailure(Call<List<Merk>> call, Throwable t) {
-//                dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(EditMotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
@@ -329,6 +323,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnImage:
+                buttonGallery = true;
                 Intent intent = new Intent(this, AlbumSelectActivity.class);
                 intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 3); // set limit for image selection
                 startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
@@ -338,12 +333,26 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                 uploadImage();
                 break;
 
-            case R.id.btnCamera:
-                goToCamera();
-                break;
+
+            case R.id.btnCamera: {
+                buttonCamera = true;
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (!Settings.System.canWrite(this)) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE);
+                    } else {
+                        request();
+                    }
+                } else {
+                    goToCamera();
+                }
+            }
+
+            break;
 
         }
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -476,22 +485,28 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             builder.addFormDataPart("gambar2", motor.getGambar2());
         }
 
-        if (images != null) {
-            for (int i = 0; i < images.size(); i++) {
-                file2 = new File(images.get(i).path);
-                try {
-                    file = new Compressor(this).compressToFile(file2);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("Error", e.getMessage());
-                }
-
-                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+        if (!(buttonCamera || buttonGallery)) {
+            file = null;
+        } else {
+            if (images == null) {
                 Log.d(DEBUG, file.getName());
+                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+            } else {
+
+                for (int i = 0; i < images.size(); i++) {
+                    file2 = new File(images.get(i).path);
+                    try {
+                        file = new Compressor(this).compressToFile(file2);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.e("Error", e.getMessage());
+                    }
+
+                    builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+                    Log.d(DEBUG, file.getName());
+                }
             }
-        }else{
-            builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
         }
 
         MultipartBody requestBody = builder.build();
@@ -526,4 +541,36 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    private void request() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        } else {
+            goToCamera();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case READ_EXTERNAL_STORAGE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    request();
+                } else {
+                    Toast.makeText(this, "Izin akses pada eksternal memori ditolak", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case CAMERA_REQUEST: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    goToCamera();
+                } else {
+                    Toast.makeText(this, "Izin akses pada kamera ditolak", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+    }
 }

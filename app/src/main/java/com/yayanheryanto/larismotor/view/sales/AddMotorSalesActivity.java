@@ -1,6 +1,7 @@
 package com.yayanheryanto.larismotor.view.sales;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,11 +10,14 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -78,28 +82,14 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     private File file, file2 = null;
     private Uri tempUri;
 
-    protected static final int CAMERA_REQUEST = 110;
+    private final int CAMERA_REQUEST = 110;
+    private final int READ_EXTERNAL_STORAGE = 123;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_motor_sales);
-
-        StrictMode.VmPolicy.Builder newbuilder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(newbuilder.build());
-        if (Build.VERSION.SDK_INT >= 23) {
-            int hasPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                    // Display UI and wait for user interaction
-                    Toast.makeText(this, "You need to allow Camera permission", Toast.LENGTH_SHORT).show();
-                } else {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-                }
-                return;
-            }
-        }
 
         initProgressDialog();
 
@@ -166,13 +156,11 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     }
 
     private void getMerk() {
-//        dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<Merk>> call = apiInterface.getMerk();
         call.enqueue(new Callback<List<Merk>>() {
             @Override
             public void onResponse(Call<List<Merk>> call, Response<List<Merk>> response) {
-//                dialog.dismiss();
                 Log.d(DEBUG, String.valueOf(response.body().size()));
                 merk = response.body();
                 if (merk != null) {
@@ -187,7 +175,6 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void onFailure(Call<List<Merk>> call, Throwable t) {
-//                dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(AddMotorSalesActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
@@ -239,96 +226,135 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
                 uploadImage();
                 break;
 
-            case R.id.btnCamera:
-                goToCamera();
-                break;
+            case R.id.btnCamera: {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (!Settings.System.canWrite(this)) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE);
+                    } else {
+                        request();
+                    }
+                } else {
+                    goToCamera();
+                }
+            }
+            break;
 
         }
     }
 
-    private void uploadImage() {
-        dialog.show();
+    @SuppressWarnings("deprecation")
+    @SuppressLint("NewApi")
+    public static boolean checkImageResource(Context ctx, ImageView imageView,
+                                             int imageResource) {
+        boolean result = false;
 
+        if (ctx != null && imageView != null && imageView.getDrawable() != null) {
+            Drawable.ConstantState constantState;
 
-        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = pref.edit();
-        String id = pref.getString(ID_USER, "");
-        String token = pref.getString(ACCESTOKEN, "");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                constantState = ctx.getResources()
+                        .getDrawable(imageResource, ctx.getTheme())
+                        .getConstantState();
+            } else {
+                constantState = ctx.getResources().getDrawable(imageResource)
+                        .getConstantState();
+            }
 
-
-
-        String mesin = no_mesin.getText().toString();
-        String polisi = no_polisi.getText().toString();
-        String rangka = no_rangka.getText().toString();
-        String tahunMotor = tahun.getText().toString();
-        String hargaMotor = harga.getText().toString();
-        String dpMotor = dp.getText().toString();
-        String cicilanMotor = cicilan.getText().toString();
-        String tenorMotor = tenor.getText().toString();
-
-
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart("no_polisi",polisi);
-        builder.addFormDataPart("no_mesin",mesin);
-        builder.addFormDataPart("no_rangka",rangka);
-        builder.addFormDataPart("tahun",tahunMotor);
-        builder.addFormDataPart("status","0");
-        builder.addFormDataPart("tipe",String.valueOf(tipeMotor));
-        builder.addFormDataPart("merk",String.valueOf(merkMotor));
-        builder.addFormDataPart("id_user",id);
-        builder.addFormDataPart("harga",hargaMotor);
-        builder.addFormDataPart("dp",dpMotor);
-        builder.addFormDataPart("cicilan",cicilanMotor);
-        builder.addFormDataPart("tenor",tenorMotor);
-
-        if (images == null) {
-            builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-        }else {
-            for (int i = 0; i < images.size(); i++) {
-                file2 = new File(images.get(i).path);
-                try {
-                    file = new Compressor(this).compressToFile(file2);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("Error", e.getMessage());
-                }
-                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-                Log.d(DEBUG, file.getName());
+            if (imageView.getDrawable().getConstantState() == constantState) {
+                result = true;
             }
         }
 
-        MultipartBody requestBody = builder.build();
-        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Motor> call = apiInterface.addMotor(token, requestBody);
-        call.enqueue(new Callback<Motor>() {
-            @Override
-            public void onResponse(Call<Motor> call, Response<Motor> response) {
-                dialog.dismiss();
-                Log.d(DEBUG, String.valueOf(response.body().getMessage()));
-                if (response.body().getMessage().equals("success")){
-                    Toast.makeText(AddMotorSalesActivity.this, "Motor Berhasil Ditambah", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddMotorSalesActivity.this, MotorSalesActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }else{
-                    Toast.makeText(AddMotorSalesActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddMotorSalesActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
+        return result;
+    }
+
+    private void uploadImage() {
+
+        if (checkImageResource(this,image1,R.drawable.motorbike)){
+            Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
+        }else {
+            dialog.show();
+
+
+            SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+            final SharedPreferences.Editor editor = pref.edit();
+            String id = pref.getString(ID_USER, "");
+            String token = pref.getString(ACCESTOKEN, "");
+
+
+            String mesin = no_mesin.getText().toString();
+            String polisi = no_polisi.getText().toString();
+            String rangka = no_rangka.getText().toString();
+            String tahunMotor = tahun.getText().toString();
+            String hargaMotor = harga.getText().toString();
+            String dpMotor = dp.getText().toString();
+            String cicilanMotor = cicilan.getText().toString();
+            String tenorMotor = tenor.getText().toString();
+
+
+            MultipartBody.Builder builder = new MultipartBody.Builder();
+            builder.setType(MultipartBody.FORM);
+            builder.addFormDataPart("no_polisi", polisi);
+            builder.addFormDataPart("no_mesin", mesin);
+            builder.addFormDataPart("no_rangka", rangka);
+            builder.addFormDataPart("tahun", tahunMotor);
+            builder.addFormDataPart("status", "0");
+            builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
+            builder.addFormDataPart("merk", String.valueOf(merkMotor));
+            builder.addFormDataPart("id_user", id);
+            builder.addFormDataPart("harga", hargaMotor);
+            builder.addFormDataPart("dp", dpMotor);
+            builder.addFormDataPart("cicilan", cicilanMotor);
+            builder.addFormDataPart("tenor", tenorMotor);
+
+            if (images == null) {
+                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+            } else {
+                for (int i = 0; i < images.size(); i++) {
+                    file2 = new File(images.get(i).path);
+                    try {
+                        file = new Compressor(this).compressToFile(file2);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.e("Error", e.getMessage());
+                    }
+                    builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+                    Log.d(DEBUG, file.getName());
                 }
             }
 
-            @Override
-            public void onFailure(Call<Motor> call, Throwable t) {
-                dialog.dismiss();
-                t.printStackTrace();
-                Toast.makeText(AddMotorSalesActivity.this, "Terjadi kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
-            }
-        });
+            MultipartBody requestBody = builder.build();
+            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+            Call<Motor> call = apiInterface.addMotor(token, requestBody);
+            call.enqueue(new Callback<Motor>() {
+                @Override
+                public void onResponse(Call<Motor> call, Response<Motor> response) {
+                    dialog.dismiss();
+                    if (response.body().getMessage().equals("success")) {
+                        Toast.makeText(AddMotorSalesActivity.this, "Motor Berhasil Ditambah", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddMotorSalesActivity.this, MotorSalesActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(AddMotorSalesActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddMotorSalesActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Motor> call, Throwable t) {
+                    dialog.dismiss();
+                    t.printStackTrace();
+                    Toast.makeText(AddMotorSalesActivity.this, "Terjadi kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     @Override
@@ -336,7 +362,6 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            //The array list has the image paths of the selected images
             images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
 
 
@@ -408,5 +433,38 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             }
         }
         return path;
+    }
+
+    private void request() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        } else {
+            goToCamera();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case READ_EXTERNAL_STORAGE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    request();
+                } else {
+                    Toast.makeText(this, "Izin akses pada eksternal memori ditolak", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case CAMERA_REQUEST: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    goToCamera();
+                } else {
+                    Toast.makeText(this, "Izin akses pada kamera ditolak", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
     }
 }
