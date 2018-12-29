@@ -344,7 +344,8 @@ public interface ApiInterface {
     Call<List<Customer>> getNamaCustomerAndNoTelp(@Query("no_mesin") String no_mesin);
 
     @POST("api/getFilteredMotor")
-    Call<List<Motor>> getFilteredMotor(@Query("status") String status,
+    Call<List<Motor>> getFilteredMotor(@Query("id_user") String id_user,
+                                       @Query("status") String status,
                                        @Query("merk") String merk,
                                        @Query("tipe") String tipe,
                                        @Query("tahun") String tahun);

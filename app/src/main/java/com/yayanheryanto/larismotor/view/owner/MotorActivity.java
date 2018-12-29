@@ -368,7 +368,9 @@ public class MotorActivity extends AppCompatActivity {
         }
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Motor>> call = apiInterface.getFilteredMotor(status, merk, tipe, tahun);
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
+        Call<List<Motor>> call = apiInterface.getFilteredMotor(id,status, merk, tipe, tahun);
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {

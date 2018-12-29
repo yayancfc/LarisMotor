@@ -20,7 +20,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.adapter.MotorAdapter;
 import com.yayanheryanto.larismotor.adapter.MotorSalesAdapter;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -28,7 +27,6 @@ import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.owner.CariMotorActivity;
-import com.yayanheryanto.larismotor.view.owner.MotorActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.view.View.GONE;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
@@ -152,6 +151,8 @@ public class MotorSalesActivity extends AppCompatActivity {
         spinnerStatus = rootDialog.findViewById(R.id.spinner_status);
         ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, status);
         spinnerStatus.setAdapter(statusAdapter);
+
+        spinnerStatus.setVisibility(GONE);
 
         getMerk();
         getTahun();
@@ -326,15 +327,8 @@ public class MotorSalesActivity extends AppCompatActivity {
     private void setFilter() {
 
 
-        String status, merk, tipe, tahun;
+        String merk, tipe, tahun;
 
-        if (spinnerStatus.getSelectedItemPosition() == 0) {
-            status = "-1";
-        } else if (spinnerStatus.getSelectedItemPosition() == 1) {
-            status = "0";
-        } else {
-            status = "1";
-        }
 
         if (spinnerMerk.getSelectedItemPosition() != 0) {
             merk = idMerk + "";
@@ -355,7 +349,9 @@ public class MotorSalesActivity extends AppCompatActivity {
         }
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Motor>> call = apiInterface.getFilteredMotor(status, merk, tipe, tahun);
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
+        Call<List<Motor>> call = apiInterface.getFilteredMotor(id, "0", merk, tipe, tahun);
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
