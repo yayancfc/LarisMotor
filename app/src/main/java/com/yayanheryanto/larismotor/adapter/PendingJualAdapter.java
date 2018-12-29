@@ -108,7 +108,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
             public void onClick(View view) {
                 AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("Konfirmasi Hapus")
-                        .setMessage("Hapus Data Pending?")
+                        .setMessage("Hapus Data PendingBeli?")
                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -127,7 +127,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
                                         if (response.body().getMessage().equals("success")){
                                             mList.remove(pending);
                                             adapter.notifyDataSetChanged();
-                                            Toast.makeText(mContext, "Pending Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "PendingBeli Berhasil Dihapus", Toast.LENGTH_SHORT).show();
                                         }else {
                                             editor.putString(ID_USER,"");
                                             editor.putString(ACCESTOKEN, "");
@@ -184,7 +184,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
         }
     }
 
-    public static String convertToTitleCaseIteratingChars(String text) {
+    private String convertToTitleCaseIteratingChars(String text) {
         if (text == null || text.isEmpty()) {
             return text;
         }

@@ -3,11 +3,11 @@ package com.yayanheryanto.larismotor.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Pending implements Parcelable
+public class PendingBeli implements Parcelable
 {
 
 
@@ -53,24 +53,24 @@ public class Pending implements Parcelable
     @SerializedName("id_tipe")
     @Expose
     private Integer idTipe;
-    public final static Parcelable.Creator<Pending> CREATOR = new Creator<Pending>() {
+    public final static Parcelable.Creator<PendingBeli> CREATOR = new Creator<PendingBeli>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public Pending createFromParcel(Parcel in) {
-            return new Pending(in);
+        public PendingBeli createFromParcel(Parcel in) {
+            return new PendingBeli(in);
         }
 
-        public Pending[] newArray(int size) {
-            return (new Pending[size]);
+        public PendingBeli[] newArray(int size) {
+            return (new PendingBeli[size]);
         }
 
     }
             ;
 
-    protected Pending(Parcel in) {
+    protected PendingBeli(Parcel in) {
         this.idPending = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.nama = ((String) in.readValue((String.class.getClassLoader())));
         this.alamat = ((String) in.readValue((String.class.getClassLoader())));
@@ -83,7 +83,7 @@ public class Pending implements Parcelable
         this.idTipe = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
-    public Pending() {
+    public PendingBeli() {
     }
 
     public Integer getIdPending() {

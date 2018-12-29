@@ -75,6 +75,7 @@ public class SearchPendingJualAdapter extends RecyclerView.Adapter<SearchPending
     public void onBindViewHolder(@NonNull PendingViewHolder holder, int position) {
         initProgressDialog();
         final PendingJual pending = mList.get(position);
+        holder.txtNama.setText(convertToTitleCaseIteratingChars(pending.getNama()));
         holder.txtNama.setText(pending.getNama());
         holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
 
@@ -106,7 +107,7 @@ public class SearchPendingJualAdapter extends RecyclerView.Adapter<SearchPending
             public void onClick(View view) {
                 AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("Konfirmasi Hapus")
-                        .setMessage("Hapus Data Pending?")
+                        .setMessage("Hapus Data PendingBeli?")
                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -125,7 +126,7 @@ public class SearchPendingJualAdapter extends RecyclerView.Adapter<SearchPending
                                         if (response.body().getMessage().equals("success")){
                                             mList.remove(pending);
                                             adapter.notifyDataSetChanged();
-                                            Toast.makeText(mContext, "Pending Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "PendingBeli Berhasil Dihapus", Toast.LENGTH_SHORT).show();
                                         }else {
                                             editor.putString(ID_USER,"");
                                             editor.putString(ACCESTOKEN, "");
@@ -180,5 +181,28 @@ public class SearchPendingJualAdapter extends RecyclerView.Adapter<SearchPending
             imgDelete = itemView.findViewById(R.id.imgDelete);
             imgEdit = itemView.findViewById(R.id.imgEdit);
         }
+    }
+
+    private String convertToTitleCaseIteratingChars(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder converted = new StringBuilder();
+
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()) {
+            if (Character.isSpaceChar(ch)) {
+                convertNext = true;
+            } else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+
+        return converted.toString();
     }
 }

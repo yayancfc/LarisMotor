@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
@@ -41,11 +41,11 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
 
 
     private Context mContext;
-    private List<Pending> mList;
+    private List<PendingBeli> mList;
     private SearchPendingBeliAdapter adapter;
     private ProgressDialog progressDialog = null;
 
-    public SearchPendingBeliAdapter(Context mContext, List<Pending> mList) {
+    public SearchPendingBeliAdapter(Context mContext, List<PendingBeli> mList) {
         this.mContext = mContext;
         this.mList = mList;
         this.adapter = this;
@@ -72,17 +72,17 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
     @Override
     public void onBindViewHolder(@NonNull PendingViewHolder holder, int position) {
         initProgressDialog();
-        final Pending pending = mList.get(position);
-        holder.txtNama.setText(pending.getNama());
-        holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
-        Log.d("Hhhh", pending.getNamaMerk() + " " + pending.getNamaTipe());
+        final PendingBeli pendingBeli = mList.get(position);
+        holder.txtNama.setText(convertToTitleCaseIteratingChars(pendingBeli.getNama()));
+        holder.txtNamaMotor.setText(pendingBeli.getNamaMerk() + " " + pendingBeli.getNamaTipe());
+        Log.d("Hhhh", pendingBeli.getNamaMerk() + " " + pendingBeli.getNamaTipe());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(mContext, DetailPendingBeliActivity.class);
-                intent.putExtra(DATA_PENDING, pending);
+                intent.putExtra(DATA_PENDING, pendingBeli);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
@@ -92,7 +92,7 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, EditPendingBeliActivity.class);
-                intent.putExtra(DATA_PENDING, pending);
+                intent.putExtra(DATA_PENDING, pendingBeli);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
@@ -103,7 +103,7 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
             public void onClick(View view) {
                 AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("Konfirmasi Hapus")
-                        .setMessage("Hapus Data Pending?")
+                        .setMessage("Hapus Data PendingBeli?")
                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -114,15 +114,15 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
                                 String token = pref.getString(ACCESTOKEN, "");
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<Pending> call = apiInterface.deletePending(token, pending.getIdPending());
-                                call.enqueue(new Callback<Pending>() {
+                                Call<PendingBeli> call = apiInterface.deletePending(token, pendingBeli.getIdPending());
+                                call.enqueue(new Callback<PendingBeli>() {
                                     @Override
-                                    public void onResponse(Call<Pending> call, Response<Pending> response) {
+                                    public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
                                         progressDialog.dismiss();
                                         if (response.body().getMessage().equals("success")){
-                                            mList.remove(pending);
+                                            mList.remove(pendingBeli);
                                             adapter.notifyDataSetChanged();
-                                            Toast.makeText(mContext, "Pending Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "PendingBeli Berhasil Dihapus", Toast.LENGTH_SHORT).show();
                                         }else {
                                             editor.putString(ID_USER,"");
                                             editor.putString(ACCESTOKEN, "");
@@ -135,7 +135,7 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
                                     }
 
                                     @Override
-                                    public void onFailure(Call<Pending> call, Throwable t) {
+                                    public void onFailure(Call<PendingBeli> call, Throwable t) {
                                         progressDialog.dismiss();
                                         t.printStackTrace();
                                         Toast.makeText(mContext, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
@@ -175,5 +175,28 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
             imgDelete = itemView.findViewById(R.id.imgDelete);
             imgEdit = itemView.findViewById(R.id.imgEdit);
         }
+    }
+
+    private String convertToTitleCaseIteratingChars(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder converted = new StringBuilder();
+
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()) {
+            if (Character.isSpaceChar(ch)) {
+                convertNext = true;
+            } else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+
+        return converted.toString();
     }
 }

@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 import com.yayanheryanto.larismotor.model.PendingJual;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
@@ -235,13 +235,13 @@ public class EditPendingJualActivity extends AppCompatActivity implements View.O
         int id_pending = pending.getIdPending();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Pending> call = apiInterface.updatePendingJual(token, id_pending, nama, alamat, telepon, merkMotor, tipeMotor, no_mesin, no_polisi, tahun, harga);
-        call.enqueue(new Callback<Pending>() {
+        Call<PendingBeli> call = apiInterface.updatePendingJual(token, id_pending, nama, alamat, telepon, merkMotor, tipeMotor, no_mesin, no_polisi, tahun, harga);
+        call.enqueue(new Callback<PendingBeli>() {
             @Override
-            public void onResponse(Call<Pending> call, Response<Pending> response) {
+            public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
                 dialog.dismiss();
                 if (response.body().getMessage().equals("success")){
-                    Toast.makeText(EditPendingJualActivity.this, "Pending Jual Berhasil Diubah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditPendingJualActivity.this, "PendingBeli Jual Berhasil Diubah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditPendingJualActivity.this, PendingTransaksiActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -256,7 +256,7 @@ public class EditPendingJualActivity extends AppCompatActivity implements View.O
             }
 
             @Override
-            public void onFailure(Call<Pending> call, Throwable t) {
+            public void onFailure(Call<PendingBeli> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(EditPendingJualActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();

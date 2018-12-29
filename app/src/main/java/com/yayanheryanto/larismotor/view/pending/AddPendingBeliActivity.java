@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
@@ -183,13 +183,13 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
         String harga = txtHarga.getText().toString();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Pending> call = apiInterface.addPendingBeli(token, Integer.valueOf(id), nama, alamat, telepon, merkMotor, tipeMotor, tahun, harga);
-        call.enqueue(new Callback<Pending>() {
+        Call<PendingBeli> call = apiInterface.addPendingBeli(token, Integer.valueOf(id), nama, alamat, telepon, merkMotor, tipeMotor, tahun, harga);
+        call.enqueue(new Callback<PendingBeli>() {
             @Override
-            public void onResponse(Call<Pending> call, Response<Pending> response) {
+            public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
                 dialog.dismiss();
                 if (response.body().getMessage().equals("success")){
-                    Toast.makeText(AddPendingBeliActivity.this, "Pending Beli Berhasil Ditambah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddPendingBeliActivity.this, "PendingBeli Beli Berhasil Ditambah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddPendingBeliActivity.this, PendingTransaksiActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -204,7 +204,7 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
             }
 
             @Override
-            public void onFailure(Call<Pending> call, Throwable t) {
+            public void onFailure(Call<PendingBeli> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(AddPendingBeliActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();

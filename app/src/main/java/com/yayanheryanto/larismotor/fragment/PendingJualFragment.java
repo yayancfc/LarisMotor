@@ -14,9 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.adapter.PendingBeliAdapter;
 import com.yayanheryanto.larismotor.adapter.PendingJualAdapter;
-import com.yayanheryanto.larismotor.model.Pending;
 import com.yayanheryanto.larismotor.model.PendingJual;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;

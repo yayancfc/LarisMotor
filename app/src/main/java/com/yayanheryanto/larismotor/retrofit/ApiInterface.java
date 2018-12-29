@@ -5,7 +5,7 @@ import com.yayanheryanto.larismotor.model.Detail;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
 import com.yayanheryanto.larismotor.model.Motor;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 import com.yayanheryanto.larismotor.model.PendingJual;
 import com.yayanheryanto.larismotor.model.Sales;
 import com.yayanheryanto.larismotor.model.Tipe;
@@ -138,7 +138,7 @@ public interface ApiInterface {
 
 
     @POST("api/getPendingBeli")
-    Call<List<Pending>> getPendingBeli(@Query("id_user") String id_user);
+    Call<List<PendingBeli>> getPendingBeli(@Query("id_user") String id_user);
 
 
     @POST("api/getPendingJual")
@@ -147,62 +147,62 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/addPendingBeli")
-    Call<Pending> addPendingBeli(@Header("Authorization") String authorization,
-                                 @Field("id_user") int id_user,
-                                 @Field("nama") String nama,
-                                 @Field("alamat") String alamat,
-                                 @Field("telepon") String telepon,
-                                 @Field("id_merk") int id_merk,
-                                 @Field("id_tipe") int id_tipe,
-                                 @Field("tahun") String tahun,
-                                 @Field("harga") String harga);
+    Call<PendingBeli> addPendingBeli(@Header("Authorization") String authorization,
+                                     @Field("id_user") int id_user,
+                                     @Field("nama") String nama,
+                                     @Field("alamat") String alamat,
+                                     @Field("telepon") String telepon,
+                                     @Field("id_merk") int id_merk,
+                                     @Field("id_tipe") int id_tipe,
+                                     @Field("tahun") String tahun,
+                                     @Field("harga") String harga);
 
     @FormUrlEncoded
     @POST("api/addPendingJual")
-    Call<Pending> addPendingJual(@Header("Authorization") String authorization,
-                                 @Field("id_user") int id_user,
-                                 @Field("nama") String nama,
-                                 @Field("alamat") String alamat,
-                                 @Field("telepon") String telepon,
-                                 @Field("id_merk") int id_merk,
-                                 @Field("id_tipe") int id_tipe,
-                                 @Field("no_mesin") String no_mesin,
-                                 @Field("no_polisi") String no_polisi,
-                                 @Field("tahun") String tahun,
-                                 @Field("harga") String harga);
+    Call<PendingBeli> addPendingJual(@Header("Authorization") String authorization,
+                                     @Field("id_user") int id_user,
+                                     @Field("nama") String nama,
+                                     @Field("alamat") String alamat,
+                                     @Field("telepon") String telepon,
+                                     @Field("id_merk") int id_merk,
+                                     @Field("id_tipe") int id_tipe,
+                                     @Field("no_mesin") String no_mesin,
+                                     @Field("no_polisi") String no_polisi,
+                                     @Field("tahun") String tahun,
+                                     @Field("harga") String harga);
 
 
     @FormUrlEncoded
     @POST("api/updatePendingJual")
-    Call<Pending> updatePendingJual(@Header("Authorization") String authorization,
-                                    @Field("id") int id,
+    Call<PendingBeli> updatePendingJual(@Header("Authorization") String authorization,
+                                        @Field("id") int id,
+                                        @Field("nama") String nama,
+                                        @Field("alamat") String alamat,
+                                        @Field("telepon") String telepon,
+                                        @Field("id_merk") int id_merk,
+                                        @Field("id_tipe") int id_tipe,
+                                        @Field("no_mesin") String no_mesin,
+                                        @Field("no_polisi") String no_polisi,
+                                        @Field("tahun") String tahun,
+                                        @Field("harga") String harga);
+
+    @FormUrlEncoded
+    @POST("api/deletePending")
+    Call<PendingBeli> deletePending(@Header("Authorization") String authorization,
+                                    @Field("id_pending") int id_pending);
+
+
+    @FormUrlEncoded
+    @POST("api/updatePending")
+    Call<PendingBeli> updatePending(@Header("Authorization") String authorization,
+                                    @Field("id_pending") int id_pending,
                                     @Field("nama") String nama,
                                     @Field("alamat") String alamat,
                                     @Field("telepon") String telepon,
                                     @Field("id_merk") int id_merk,
                                     @Field("id_tipe") int id_tipe,
-                                    @Field("no_mesin") String no_mesin,
-                                    @Field("no_polisi") String no_polisi,
                                     @Field("tahun") String tahun,
                                     @Field("harga") String harga);
-
-    @FormUrlEncoded
-    @POST("api/deletePending")
-    Call<Pending> deletePending(@Header("Authorization") String authorization,
-                                @Field("id_pending") int id_pending);
-
-
-    @FormUrlEncoded
-    @POST("api/updatePending")
-    Call<Pending> updatePending(@Header("Authorization") String authorization,
-                                @Field("id_pending") int id_pending,
-                                @Field("nama") String nama,
-                                @Field("alamat") String alamat,
-                                @Field("telepon") String telepon,
-                                @Field("id_merk") int id_merk,
-                                @Field("id_tipe") int id_tipe,
-                                @Field("tahun") String tahun,
-                                @Field("harga") String harga);
 
     @FormUrlEncoded
     @POST("api/deletePendingJual")
@@ -370,12 +370,23 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/searchPendingBeli")
-    Call<List<Pending>> searchPendingBeli(@Field("id_user") String id_user,
-                                          @Field("nama") String nama);
+    Call<List<PendingBeli>> searchPendingBeli(@Field("id_user") String id_user,
+                                              @Field("nama") String nama);
 
     @FormUrlEncoded
     @POST("api/searchPendingJual")
     Call<List<PendingJual>> searchPendingJual(@Field("id_user") String id_user,
                                               @Field("nama") String nama);
 
+
+    @POST("api/getFilteredPendingBeli")
+    Call<List<PendingBeli>> getFilteredPendingBeli(@Query("id_user") String id_user,
+                                       @Query("merk") String merk,
+                                       @Query("tipe") String tipe) ;
+
+
+    @POST("api/getFilteredPendingJual")
+    Call<List<PendingJual>> getFilteredPendingJual(@Query("id_user") String id_user,
+                                                   @Query("merk") String merk,
+                                                   @Query("tipe") String tipe) ;
 }

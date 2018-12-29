@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.SearchPendingBeliAdapter;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
@@ -85,15 +85,15 @@ public class SearchPendingBeliActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Pending>> call = apiInterface.searchPendingBeli(id,nama);
-        call.enqueue(new Callback<List<Pending>>() {
+        Call<List<PendingBeli>> call = apiInterface.searchPendingBeli(id,nama);
+        call.enqueue(new Callback<List<PendingBeli>>() {
             @Override
-            public void onResponse(Call<List<Pending>> call, Response<List<Pending>> response) {
+            public void onResponse(Call<List<PendingBeli>> call, Response<List<PendingBeli>> response) {
                 dialog.dismiss();
                 if (response.body().isEmpty()) {
                     Toast.makeText(SearchPendingBeliActivity.this, "Data Tidak Ditemukan", Toast.LENGTH_SHORT).show();
                 } else {
-                    List<Pending> list = response.body();
+                    List<PendingBeli> list = response.body();
 
                     adapter = new SearchPendingBeliAdapter(getApplicationContext(), list);
                     recyclerView.setAdapter(adapter);
@@ -102,7 +102,7 @@ public class SearchPendingBeliActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Pending>> call, Throwable t) {
+            public void onFailure(Call<List<PendingBeli>> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(SearchPendingBeliActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();

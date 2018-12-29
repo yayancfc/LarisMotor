@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
@@ -40,7 +40,7 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
     private EditText txtNama, txtAlamat, txtNoTelepon, txtNamaMotor, txtTahun, txtHarga;
     private Button btnSave;
     private ProgressDialog dialog;
-    private Pending pending;
+    private PendingBeli pendingBeli;
     private Spinner spinnerMerk, spinnerTipe;
     private ArrayAdapter<String> adapter, adapter2;
     private String s1, s2;
@@ -72,7 +72,7 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
 
         getFromIntent();
 
-        getMerkById(String.valueOf(pending.getIdMerk()), String.valueOf(pending.getIdTipe()));
+        getMerkById(String.valueOf(pendingBeli.getIdMerk()), String.valueOf(pendingBeli.getIdTipe()));
         getMerk();
 
         spinnerMerk.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -104,14 +104,14 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
     private void getFromIntent() {
 
         Bundle data = getIntent().getExtras();
-        pending = data.getParcelable(DATA_PENDING);
+        pendingBeli = data.getParcelable(DATA_PENDING);
 
-        txtNama.setText(pending.getNama());
-        txtAlamat.setText(pending.getAlamat());
-        txtNoTelepon.setText(pending.getNoTelp());
-        //txtNamaMotor.setText(pending.getNamaMotor());
-        txtTahun.setText(""+pending.getTahun());
-        txtHarga.setText(""+pending.getHarga());
+        txtNama.setText(pendingBeli.getNama());
+        txtAlamat.setText(pendingBeli.getAlamat());
+        txtNoTelepon.setText(pendingBeli.getNoTelp());
+        //txtNamaMotor.setText(pendingBeli.getNamaMotor());
+        txtTahun.setText(""+ pendingBeli.getTahun());
+        txtHarga.setText(""+ pendingBeli.getHarga());
     }
 
 
@@ -222,16 +222,16 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
         String telepon = txtNoTelepon.getText().toString();
         String tahun = txtTahun.getText().toString();
         String harga = txtHarga.getText().toString();
-        int id_pending = pending.getIdPending();
+        int id_pending = pendingBeli.getIdPending();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Pending> call = apiInterface.updatePending(token, id_pending, nama, alamat, telepon, merkMotor,tipeMotor, tahun, harga);
-        call.enqueue(new Callback<Pending>() {
+        Call<PendingBeli> call = apiInterface.updatePending(token, id_pending, nama, alamat, telepon, merkMotor,tipeMotor, tahun, harga);
+        call.enqueue(new Callback<PendingBeli>() {
             @Override
-            public void onResponse(Call<Pending> call, Response<Pending> response) {
+            public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
                 dialog.dismiss();
                     if (response.body().getMessage().equals("success")){
-                    Toast.makeText(EditPendingBeliActivity.this, "Pending Beli Berhasil Diubah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditPendingBeliActivity.this, "PendingBeli Beli Berhasil Diubah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditPendingBeliActivity.this, PendingTransaksiActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -246,7 +246,7 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
             }
 
             @Override
-            public void onFailure(Call<Pending> call, Throwable t) {
+            public void onFailure(Call<PendingBeli> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(EditPendingBeliActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();

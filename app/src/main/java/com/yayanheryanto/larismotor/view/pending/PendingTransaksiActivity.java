@@ -1,26 +1,46 @@
 package com.yayanheryanto.larismotor.view.pending;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
+import com.yayanheryanto.larismotor.adapter.MotorAdapter;
 import com.yayanheryanto.larismotor.fragment.PendingBeliFragment;
 import com.yayanheryanto.larismotor.fragment.PendingJualFragment;
+import com.yayanheryanto.larismotor.model.Motor;
+import com.yayanheryanto.larismotor.model.PendingBeli;
+import com.yayanheryanto.larismotor.retrofit.ApiClient;
+import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.owner.MotorActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class PendingTransaksiActivity extends AppCompatActivity {
 
@@ -44,7 +64,7 @@ public class PendingTransaksiActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_pending, menu);
         menuItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView)menuItem.getActionView();
+        searchView = (SearchView) menuItem.getActionView();
         searchView.setIconifiedByDefault(false);
 
         return true;
@@ -55,10 +75,10 @@ public class PendingTransaksiActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.tambah:
 
-                if (currentPage==0){
+                if (currentPage == 0) {
                     Intent intent = new Intent(PendingTransaksiActivity.this, AddPendingBeliActivity.class);
                     startActivity(intent);
-                }else{
+                } else {
                     Intent intent = new Intent(PendingTransaksiActivity.this, AddpendingJualActivity.class);
                     startActivity(intent);
                 }
@@ -66,11 +86,22 @@ public class PendingTransaksiActivity extends AppCompatActivity {
 
             case R.id.action_search:
                 int pos = view_pager.getCurrentItem();
-                if (pos==0){
+                if (pos == 0) {
                     Intent intent = new Intent(PendingTransaksiActivity.this, SearchPendingBeliActivity.class);
                     startActivity(intent);
-                }else{
+                } else {
                     Intent intent = new Intent(PendingTransaksiActivity.this, SearchPendingJualActivity.class);
+                    startActivity(intent);
+                }
+                return true;
+
+            case R.id.filter:
+                pos = view_pager.getCurrentItem();
+                if (pos == 0) {
+                    Intent intent = new Intent(PendingTransaksiActivity.this, FilteredPendingBeliActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(PendingTransaksiActivity.this, FilteredPendingJualActivity.class);
                     startActivity(intent);
                 }
                 return true;

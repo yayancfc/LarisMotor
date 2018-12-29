@@ -5,14 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 
 import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 
 public class DetailPendingBeliActivity extends AppCompatActivity {
 
     private TextView txtNama, txtAlamat, txtNoTelepon, txtMerk, txtTipe, txtTahun, txtHarga;
-    private Pending pending;
+    private PendingBeli pendingBeli;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +35,15 @@ public class DetailPendingBeliActivity extends AppCompatActivity {
     private void getFromIntent() {
 
         Bundle data = getIntent().getExtras();
-        pending = data.getParcelable(DATA_PENDING);
+        pendingBeli = data.getParcelable(DATA_PENDING);
 
-        txtNama.setText(pending.getNama());
-        txtAlamat.setText(pending.getAlamat());
-        txtNoTelepon.setText(pending.getNoTelp());
-        txtMerk.setText(pending.getNamaMerk());
-        txtTipe.setText(pending.getNamaTipe());
-        txtTahun.setText(""+pending.getTahun());
-        txtHarga.setText("Rp. "+pending.getHarga());
+        txtNama.setText(pendingBeli.getNama());
+        txtAlamat.setText(pendingBeli.getAlamat());
+        txtNoTelepon.setText(pendingBeli.getNoTelp());
+        txtMerk.setText(pendingBeli.getNamaMerk());
+        txtTipe.setText(pendingBeli.getNamaTipe());
+        txtTahun.setText(""+ pendingBeli.getTahun());
+        txtHarga.setText("Rp. "+ pendingBeli.getHarga());
     }
 
 

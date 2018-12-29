@@ -18,14 +18,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 import com.yayanheryanto.larismotor.view.pending.DetailPendingBeliActivity;
 import com.yayanheryanto.larismotor.view.pending.EditPendingBeliActivity;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.view.pending.PendingTransaksiActivity;
-import com.yayanheryanto.larismotor.model.Pending;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,12 +42,12 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
 
 
     private Context mContext;
-    private List<Pending> mList;
+    private List<PendingBeli> mList;
     private FragmentManager parentActivity;
     private PendingBeliAdapter adapter;
     private ProgressDialog progressDialog = null;
 
-    public PendingBeliAdapter(Context mContext, List<Pending> mList, FragmentManager parentActivity) {
+    public PendingBeliAdapter(Context mContext, List<PendingBeli> mList, FragmentManager parentActivity) {
         this.mContext = mContext;
         this.mList = mList;
         this.parentActivity = parentActivity;
@@ -74,16 +75,16 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
     @Override
     public void onBindViewHolder(@NonNull PendingViewHolder holder, int position) {
         initProgressDialog();
-        final Pending pending = mList.get(position);
-        holder.txtNama.setText(convertToTitleCaseIteratingChars(pending.getNama()));
-        holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
+        final PendingBeli pendingBeli = mList.get(position);
+        holder.txtNama.setText(convertToTitleCaseIteratingChars(pendingBeli.getNama()));
+        holder.txtNamaMotor.setText(pendingBeli.getNamaMerk() + " " + pendingBeli.getNamaTipe());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(mContext, DetailPendingBeliActivity.class);
-                intent.putExtra(DATA_PENDING, pending);
+                intent.putExtra(DATA_PENDING, pendingBeli);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
@@ -93,7 +94,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, EditPendingBeliActivity.class);
-                intent.putExtra(DATA_PENDING, pending);
+                intent.putExtra(DATA_PENDING, pendingBeli);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
@@ -104,7 +105,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
             public void onClick(View view) {
                 AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("Konfirmasi Hapus")
-                        .setMessage("Hapus Data Pending?")
+                        .setMessage("Hapus Data PendingBeli?")
                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -115,15 +116,15 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
                                 String token = pref.getString(ACCESTOKEN, "");
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<Pending> call = apiInterface.deletePending(token, pending.getIdPending());
-                                call.enqueue(new Callback<Pending>() {
+                                Call<PendingBeli> call = apiInterface.deletePending(token, pendingBeli.getIdPending());
+                                call.enqueue(new Callback<PendingBeli>() {
                                     @Override
-                                    public void onResponse(Call<Pending> call, Response<Pending> response) {
+                                    public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
                                         progressDialog.dismiss();
                                         if (response.body().getMessage().equals("success")){
-                                            mList.remove(pending);
+                                            mList.remove(pendingBeli);
                                             adapter.notifyDataSetChanged();
-                                            Toast.makeText(mContext, "Pending Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "PendingBeli Berhasil Dihapus", Toast.LENGTH_SHORT).show();
                                         }else {
                                             editor.putString(ID_USER,"");
                                             editor.putString(ACCESTOKEN, "");
@@ -136,7 +137,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
                                     }
 
                                     @Override
-                                    public void onFailure(Call<Pending> call, Throwable t) {
+                                    public void onFailure(Call<PendingBeli> call, Throwable t) {
                                         progressDialog.dismiss();
                                         t.printStackTrace();
                                         Toast.makeText(mContext, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
@@ -178,7 +179,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
         }
     }
 
-    public static String convertToTitleCaseIteratingChars(String text) {
+    private String convertToTitleCaseIteratingChars(String text) {
         if (text == null || text.isEmpty()) {
             return text;
         }

@@ -10,6 +10,13 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
 
+    <item
+        android:id="@+id/filter"
+        android:icon="@drawable/filter"
+        android:title="Filter"
+        app:showAsAction="always" />
+
+
     <item android:title="Tambah"
         android:id="@+id/tambah"
         app:showAsAction="always"

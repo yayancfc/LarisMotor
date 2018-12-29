@@ -9,13 +9,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.PendingBeliAdapter;
-import com.yayanheryanto.larismotor.model.Pending;
+import com.yayanheryanto.larismotor.model.PendingBeli;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
@@ -46,8 +47,9 @@ public class PendingBeliFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view;
+
         view = inflater.inflate(R.layout.fragment_pending_beli, container, false);
 
         initProgressDialog();
@@ -66,20 +68,20 @@ public class PendingBeliFragment extends Fragment {
         SharedPreferences pref = this.getActivity().getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<List<Pending>> call = apiInterface.getPendingBeli(id);
-        call.enqueue(new Callback<List<Pending>>() {
+        Call<List<PendingBeli>> call = apiInterface.getPendingBeli(id);
+        call.enqueue(new Callback<List<PendingBeli>>() {
             @Override
-            public void onResponse(Call<List<Pending>> call, Response<List<Pending>> response) {
+            public void onResponse(Call<List<PendingBeli>> call, Response<List<PendingBeli>> response) {
                 dialog.dismiss();
-                List<Pending> list = response.body();
+                List<PendingBeli> list = response.body();
 
-                adapter = new PendingBeliAdapter(getContext(),list, getFragmentManager());
+                adapter = new PendingBeliAdapter(getContext(), list, getFragmentManager());
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onFailure(Call<List<Pending>> call, Throwable t) {
+            public void onFailure(Call<List<PendingBeli>> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(getContext(), "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
@@ -94,5 +96,6 @@ public class PendingBeliFragment extends Fragment {
         dialog.setMessage("Sedang Memproses..");
         dialog.setCancelable(false);
     }
+
 
 }
