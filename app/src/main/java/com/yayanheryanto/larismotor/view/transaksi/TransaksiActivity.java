@@ -91,7 +91,7 @@ public class TransaksiActivity extends AppCompatActivity {
         initProgressDialog();
 
 
-        getMerk();
+
 
         SimpleDateFormat df = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("ID"));
 
@@ -149,6 +149,7 @@ public class TransaksiActivity extends AppCompatActivity {
                     hargaJualMinimum.setEnabled(true);
                     checklist.setVisibility(GONE);
                     kondisi = 1;
+                    getMerk();
 
 
                 } else {
@@ -309,8 +310,24 @@ public class TransaksiActivity extends AppCompatActivity {
                                 public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
 
                                     MerkTipe merkTipe = response.body().get(0);
-                                    spinnerMerk.setSelection(merkAdapter.getPosition(merkTipe.getNamaMerk()));
-                                    spinnerTipe.setSelection(tipeAdapter.getPosition(merkTipe.getNamaTipe()));
+
+                                    String[] merkArray = new String[1];
+                                    merkArray[0] = merkTipe.getNamaMerk();
+
+                                    merkAdapter = new ArrayAdapter<String>(TransaksiActivity.this,
+                                            android.R.layout.simple_spinner_item, merkArray);
+
+                                    spinnerMerk.setAdapter(merkAdapter);
+                                    spinnerMerk.setSelection(0);
+
+                                    String[] tipeArray = new String[1];
+                                    tipeArray[0] = merkTipe.getNamaTipe();
+
+                                    tipeAdapter = new ArrayAdapter<String>(TransaksiActivity.this,
+                                            android.R.layout.simple_spinner_item, tipeArray);
+
+                                    spinnerTipe.setAdapter(tipeAdapter);
+                                    spinnerTipe.setSelection(0);
 
                                 }
 
