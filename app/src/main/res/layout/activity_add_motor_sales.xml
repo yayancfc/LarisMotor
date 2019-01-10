@@ -24,17 +24,40 @@
                 android:layout_centerInParent="true"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
+
+                <TextView
+                    android:id="@+id/hint"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:text="Silakan Masukan Nomor Mesin"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
 
                     <EditText
                         android:id="@+id/no_mesin"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:hint="No. Mesin" />
 
-                </android.support.design.widget.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/check"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:background="@color/colorAccent"
+                        android:text="CHECK"
+                        android:textColor="#FFFFFF" />
+
+                </LinearLayout>
 
 
                 <android.support.design.widget.TextInputLayout

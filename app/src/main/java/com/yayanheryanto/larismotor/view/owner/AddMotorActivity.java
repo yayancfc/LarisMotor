@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -30,10 +31,12 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
+import com.yayanheryanto.larismotor.model.MerkTipe;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
@@ -59,6 +62,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.view.View.GONE;
 import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
@@ -66,7 +70,7 @@ import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class AddMotorActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btnUpload, btnSave, btnCamera;
+    private Button btnUpload, btnSave, btnCamera, check;
     private List<Merk> merk;
     private List<Tipe> tipe;
     private Spinner spinnerMerk, spinnerTipe;
@@ -78,6 +82,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private int merkMotor, tipeMotor;
     private ProgressDialog dialog;
     private TextInputLayout terjual;
+    private TextView labelStatus;
+    private TextView hint;
     private File file, file2 = null;
 
     private final int CAMERA_REQUEST = 110;
@@ -111,11 +117,96 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         tenor = findViewById(R.id.tenor);
         dp = findViewById(R.id.dp);
         terjual = findViewById(R.id.terjual);
+        labelStatus = findViewById(R.id.label_status);
+        hint = findViewById(R.id.hint);
+        check = findViewById(R.id.check);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
 
+
+        hide();
+
+
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+                String id = pref.getString(ID_USER, "");
+                ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+                Call<Motor> call = apiInterface.validateMotor(id, no_mesin.getText().toString());
+
+                call.enqueue(new Callback<Motor>() {
+                    @Override
+                    public void onResponse(Call<Motor> call, Response<Motor> response) {
+                        if (response.body().getNoMesin().equals("1")) {
+                            reveal();
+                            check.setVisibility(GONE);
+                            hint.setVisibility(GONE);
+                            notFound();
+                        } else if (response.body().getNoMesin().equals("0")) {
+                            Toast.makeText(getBaseContext(), "Motor sudah tersedia", Toast.LENGTH_SHORT).show();
+                        } else {
+                            reveal();
+                            check.setVisibility(GONE);
+                            hint.setVisibility(GONE);
+                            no_polisi.setText(response.body().getNoPolisi());
+                            if (!(response.body().getNoPolisi() == null)) {
+                                no_polisi.setEnabled(false);
+                                no_polisi.setTextColor(Color.BLACK);
+                            }
+
+                            no_rangka.setText(response.body().getNoRangka());
+                            no_rangka.setEnabled(false);
+                            no_rangka.setTextColor(Color.BLACK);
+
+                            tahun.setText(response.body().getTahun()+"");
+                            tahun.setEnabled(false);
+                            tahun.setTextColor(Color.BLACK);
+
+                            status.setVisibility(GONE);
+                            labelStatus.setVisibility(GONE);
+
+                            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+                            Call<List<MerkTipe>> call2 = apiInterface.getMerkById(response.body().getIdMerk()+"",response.body().getIdTipe()+"") ; ;
+                            call2.enqueue(new Callback<List<MerkTipe>>() {
+                                @Override
+                                public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
+                                    String[] namaMerk = new String[1] ;
+                                    String[] namaTipe = new String[1] ;
+                                    namaMerk[0] = response.body().get(0).getNamaMerk() ;
+                                    namaTipe[0] = response.body().get(0).getNamaTipe() ;
+
+                                    adapter = new ArrayAdapter<>(getBaseContext(),android.R.layout.simple_dropdown_item_1line,namaMerk) ;
+                                    adapter2 = new ArrayAdapter<>(getBaseContext(),android.R.layout.simple_dropdown_item_1line,namaTipe) ;
+
+                                    spinnerMerk.setAdapter(adapter);
+                                    spinnerTipe.setAdapter(adapter2);
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<MerkTipe>> call, Throwable t) {
+
+                                }
+                            });
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Motor> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
+    }
+
+
+    private void notFound() {
         getMerk();
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
@@ -149,7 +240,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
                 if (status.getCheckedRadioButtonId() == R.id.radio_available) {
-                    terjual.setVisibility(View.GONE);
+                    terjual.setVisibility(GONE);
                 } else {
                     terjual.setVisibility(View.VISIBLE);
                 }
@@ -160,6 +251,50 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
+
+    }
+
+    private void hide() {
+        no_polisi.setVisibility(GONE);
+        no_rangka.setVisibility(GONE);
+        tahun.setVisibility(GONE);
+        harga.setVisibility(GONE);
+        hjm.setVisibility(GONE);
+        dp.setVisibility(GONE);
+        cicilan.setVisibility(GONE);
+        tenor.setVisibility(GONE);
+        spinnerMerk.setVisibility(GONE);
+        spinnerTipe.setVisibility(GONE);
+        labelStatus.setVisibility(GONE);
+        status.setVisibility(GONE);
+        image1.setVisibility(GONE);
+        image2.setVisibility(GONE);
+        image3.setVisibility(GONE);
+        btnUpload.setVisibility(GONE);
+        btnSave.setVisibility(GONE);
+        btnCamera.setVisibility(GONE);
+
+    }
+
+    private void reveal() {
+        no_polisi.setVisibility(View.VISIBLE);
+        no_rangka.setVisibility(View.VISIBLE);
+        tahun.setVisibility(View.VISIBLE);
+        harga.setVisibility(View.VISIBLE);
+        hjm.setVisibility(View.VISIBLE);
+        dp.setVisibility(View.VISIBLE);
+        cicilan.setVisibility(View.VISIBLE);
+        tenor.setVisibility(View.VISIBLE);
+        spinnerMerk.setVisibility(View.VISIBLE);
+        spinnerTipe.setVisibility(View.VISIBLE);
+        labelStatus.setVisibility(View.VISIBLE);
+        status.setVisibility(View.VISIBLE);
+        image1.setVisibility(View.VISIBLE);
+        image2.setVisibility(View.VISIBLE);
+        image3.setVisibility(View.VISIBLE);
+        btnUpload.setVisibility(View.VISIBLE);
+        btnSave.setVisibility(View.VISIBLE);
+        btnCamera.setVisibility(View.VISIBLE);
 
     }
 
@@ -493,5 +628,10 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                 return;
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(AddMotorActivity.this, MotorActivity.class));
     }
 }

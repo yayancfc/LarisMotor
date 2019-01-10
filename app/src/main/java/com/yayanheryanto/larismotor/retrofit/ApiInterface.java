@@ -381,12 +381,25 @@ public interface ApiInterface {
 
     @POST("api/getFilteredPendingBeli")
     Call<List<PendingBeli>> getFilteredPendingBeli(@Query("id_user") String id_user,
-                                       @Query("merk") String merk,
-                                       @Query("tipe") String tipe) ;
+                                                   @Query("merk") String merk,
+                                                   @Query("tipe") String tipe);
 
 
     @POST("api/getFilteredPendingJual")
     Call<List<PendingJual>> getFilteredPendingJual(@Query("id_user") String id_user,
                                                    @Query("merk") String merk,
-                                                   @Query("tipe") String tipe) ;
+                                                   @Query("tipe") String tipe);
+
+
+    @POST("api/updateCustomer")
+    Call<Customer> updateCustomer(@Query("no_ktp") String noKTP,
+                                  @Query("no_telp") String nomor,
+                                  @Query("wa") String wa,
+                                  @Query("fb") String fb,
+                                  @Query("ig") String ig);
+
+    @POST("api/motorValidate")
+    Call<Motor> validateMotor(@Query("id_user") String id,
+                              @Query("no_mesin") String nomorMesin);
+
 }

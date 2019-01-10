@@ -396,4 +396,9 @@ public class MotorActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(MotorActivity.this,OwnerMenuActivity.class));
+    }
 }

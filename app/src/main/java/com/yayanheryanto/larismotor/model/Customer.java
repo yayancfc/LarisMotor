@@ -8,6 +8,18 @@ import com.google.gson.annotations.SerializedName;
 
 public class Customer implements Parcelable {
 
+    @SerializedName("message")
+    @Expose
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @SerializedName("no_ktp")
     @Expose
     private String noKtp;

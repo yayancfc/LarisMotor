@@ -380,4 +380,9 @@ public class Motor implements Parcelable {
             return new Motor[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

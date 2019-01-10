@@ -378,4 +378,8 @@ public class MotorSalesActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(MotorSalesActivity.this,SalesMenuActivity.class));
+    }
 }
