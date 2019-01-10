@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -60,6 +62,7 @@ import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.BASE_URL;
 import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 
@@ -80,6 +83,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
     private String s1, s2;
     private Uri tempUri;
     boolean buttonCamera, buttonGallery = false;
+
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
@@ -192,6 +196,34 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         if (motor.getGambar2() != null) {
             Picasso.get().load(BASE_URL + "storage/motor/" + motor.getGambar2()).into(image3);
         }
+
+        if (data.getBoolean("ada")) {
+            freeze();
+        }
+    }
+
+    private void freeze() {
+
+        no_mesin.setEnabled(false);
+        no_mesin.setTextColor(Color.BLACK);
+
+        no_polisi.setEnabled(false);
+        no_polisi.setTextColor(Color.BLACK);
+
+        no_rangka.setEnabled(false);
+        no_rangka.setTextColor(Color.BLACK);
+
+        tahun.setEnabled(false);
+        tahun.setTextColor(Color.BLACK);
+
+        harga.setText("");
+        dp.setText("");
+        cicilan.setText("");
+        tenor.setText("");
+
+
+
+
     }
 
     private void initProgressDialog() {
@@ -348,6 +380,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         dialog.show();
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String token = pref.getString(ACCESTOKEN, "");
+        String id = pref.getString(ID_USER, "");
 
 
         String mesin = no_mesin.getText().toString();
@@ -370,6 +403,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         builder.addFormDataPart("status", "0");
         builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
         builder.addFormDataPart("merk", String.valueOf(merkMotor));
+        builder.addFormDataPart("id_user", id);
         builder.addFormDataPart("harga", hargaMotor);
         builder.addFormDataPart("dp", dpMotor);
         builder.addFormDataPart("cicilan", cicilanMotor);

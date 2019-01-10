@@ -135,6 +135,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, EditMotorSalesActivity.class);
                 intent.putExtra(DATA_MOTOR, motor);
+                intent.putExtra("ada",false) ;
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }

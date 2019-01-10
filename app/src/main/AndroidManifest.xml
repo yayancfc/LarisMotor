@@ -71,7 +71,9 @@
         <activity android:name=".view.pending.SearchPendingBeliActivity" />
         <activity android:name=".view.pending.FilteredPendingJualActivity" />
         <activity android:name=".view.pending.FilteredPendingBeliActivity" />
-        <activity android:name=".view.owner.EditCustomerActivity"></activity>
+        <activity android:name=".view.owner.EditCustomerActivity" />
+        <activity android:name=".view.sales.InsentifSalesActivity" />
+        <activity android:name=".view.owner.InsentifAcitivity"></activity>
     </application>
 
 </manifest>

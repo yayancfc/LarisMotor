@@ -38,6 +38,8 @@ import android.widget.Toast;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.MerkTipe;
 import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.view.owner.AddMotorActivity;
+import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
 import com.yayanheryanto.larismotor.view.owner.MotorActivity;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -66,6 +68,7 @@ import retrofit2.Response;
 
 import static android.view.View.GONE;
 import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
+import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
@@ -86,6 +89,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     private File file, file2 = null;
     private Uri tempUri;
     private TextView hint;
+
+    private static int cam ;
+
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
@@ -118,9 +124,23 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
 
+        btnUpload.setOnClickListener(this);
+        btnSave.setOnClickListener(this);
+        btnCamera.setOnClickListener(this);
 
+        if (cam == 1) {
+            reveal();
+            check.setVisibility(GONE);
+            hint.setVisibility(GONE);
+            notFound();
+        } else if (cam == 1) {
+            reveal();
+            check.setVisibility(GONE);
+            hint.setVisibility(GONE);
 
-        hide();
+        } else {
+            hide();
+        }
 
 
         check.setOnClickListener(new View.OnClickListener() {
@@ -142,47 +162,13 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
                         } else if (response.body().getNoMesin().equals("0")) {
                             Toast.makeText(getBaseContext(), "Motor sudah tersedia", Toast.LENGTH_SHORT).show();
                         } else {
-                            reveal();
-                            check.setVisibility(GONE);
-                            hint.setVisibility(GONE);
-                            no_polisi.setText(response.body().getNoPolisi());
-                            if (!(response.body().getNoPolisi() == null)) {
-                                no_polisi.setEnabled(false);
-                                no_polisi.setTextColor(Color.BLACK);
-                            }
 
-                            no_rangka.setText(response.body().getNoRangka());
-                            no_rangka.setEnabled(false);
-                            no_rangka.setTextColor(Color.BLACK);
+                            Intent intent = new Intent(AddMotorSalesActivity.this,EditMotorSalesActivity.class) ;
+                            intent.putExtra(DATA_MOTOR,response.body()) ;
+                            intent.putExtra("ada",true) ;
 
-                            tahun.setText(response.body().getTahun()+"");
-                            tahun.setEnabled(false);
-                            tahun.setTextColor(Color.BLACK);
+                            startActivity(intent);
 
-
-
-                            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                            Call<List<MerkTipe>> call2 = apiInterface.getMerkById(response.body().getIdMerk()+"",response.body().getIdTipe()+"") ; ;
-                            call2.enqueue(new Callback<List<MerkTipe>>() {
-                                @Override
-                                public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
-                                    String[] namaMerk = new String[1] ;
-                                    String[] namaTipe = new String[1] ;
-                                    namaMerk[0] = response.body().get(0).getNamaMerk() ;
-                                    namaTipe[0] = response.body().get(0).getNamaTipe() ;
-
-                                    adapter = new ArrayAdapter<>(getBaseContext(),android.R.layout.simple_dropdown_item_1line,namaMerk) ;
-                                    adapter2 = new ArrayAdapter<>(getBaseContext(),android.R.layout.simple_dropdown_item_1line,namaTipe) ;
-
-                                    spinnerMerk.setAdapter(adapter);
-                                    spinnerTipe.setAdapter(adapter2);
-                                }
-
-                                @Override
-                                public void onFailure(Call<List<MerkTipe>> call, Throwable t) {
-
-                                }
-                            });
                         }
 
 
@@ -267,9 +253,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         });
 
 
-        btnUpload.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
-        btnCamera.setOnClickListener(this);
+
 
     }
 
@@ -518,6 +502,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAMERA_REQUEST);
+        cam = 1;
 
     }
 

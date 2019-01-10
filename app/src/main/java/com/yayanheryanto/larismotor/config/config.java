@@ -17,5 +17,5 @@ public class config {
     public static final String DATA_CUSTOMER = "DATA_CUSTOMER";
     public static final String KTP_SALES = "KTP_SALES";
 
-    public static final String BASE_URL = "http://larismotor.yayancfc.com/";
+    public static final String BASE_URL = "http://laris-motor.com/";
 }

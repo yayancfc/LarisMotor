@@ -125,6 +125,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, EditMotorActivity.class);
                 intent.putExtra(DATA_MOTOR, motor);
+                intent.putExtra("ada",false) ;
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
@@ -139,6 +140,11 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
                 mContext.startActivity(intent);
             }
         });
+
+        if (motor.getStatus() == 1) {
+            motorViewHolder.imgDeelete.setVisibility(View.GONE);
+
+        }
 
         motorViewHolder.imgDeelete.setOnClickListener(new View.OnClickListener() {
             @Override

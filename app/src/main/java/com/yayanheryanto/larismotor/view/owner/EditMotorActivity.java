@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -65,6 +66,7 @@ import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.BASE_URL;
 import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 
@@ -85,6 +87,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     private String s1, s2;
     private TextInputLayout terjual;
     private File file, file2 = null;
+    private RadioButton sold ;
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
@@ -114,6 +117,8 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         tenor = findViewById(R.id.tenor);
         dp = findViewById(R.id.dp);
         terjual = findViewById(R.id.terjual);
+        sold = findViewById(R.id.radio_sold_out);
+
 
 
         image1 = findViewById(R.id.image1);
@@ -230,6 +235,11 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         if (motor.getGambar2() != null) {
             Picasso.get().load(BASE_URL + "storage/motor/" + motor.getGambar2()).into(image3);
         }
+
+        if (data.getBoolean("ada")) {
+            freeze();
+        }
+
     }
 
     private void initProgressDialog() {
@@ -237,6 +247,34 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         dialog.setTitle("Loading");
         dialog.setMessage("Sedang Memproses..");
         dialog.setCancelable(false);
+    }
+
+    private void freeze() {
+
+        no_mesin.setEnabled(false);
+        no_mesin.setTextColor(Color.BLACK);
+
+        no_polisi.setEnabled(false);
+        no_polisi.setTextColor(Color.BLACK);
+
+        no_rangka.setEnabled(false);
+        no_rangka.setTextColor(Color.BLACK);
+
+        tahun.setEnabled(false);
+        tahun.setTextColor(Color.BLACK);
+
+        harga.setText("");
+        hjm.setText("");
+        dp.setText("");
+        cicilan.setText("");
+        tenor.setText("");
+
+        status.check(R.id.radio_available);
+        terjual.setVisibility(View.GONE);
+        status.setEnabled(false);
+        sold.setEnabled(false);
+
+
     }
 
     private void getMerk() {
@@ -437,6 +475,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         dialog.show();
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String token = pref.getString(ACCESTOKEN, "");
+        String id = pref.getString(ID_USER, "");
 
         int selectedId = status.getCheckedRadioButtonId();
         RadioButton radioButton = (RadioButton) findViewById(selectedId);
@@ -469,6 +508,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         builder.addFormDataPart("status", statusMotor);
         builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
         builder.addFormDataPart("merk", String.valueOf(merkMotor));
+        builder.addFormDataPart("id_user", id);
         builder.addFormDataPart("harga", hargaMotor);
         builder.addFormDataPart("harga_terjual", hargaTerjual);
         builder.addFormDataPart("dp", dpMotor);
